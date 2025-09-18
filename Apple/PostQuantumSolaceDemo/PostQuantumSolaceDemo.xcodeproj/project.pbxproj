@@ -1,0 +1,636 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		09296B6F2E7C00340000D871 /* ConnectionManagerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 09296B6E2E7C00340000D871 /* ConnectionManagerKit */; };
+		09296BB92E7C07EE0000D871 /* ConnectionManagerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */; };
+		09296C8A2E7C0EA10000D871 /* PQSIRCCore in Frameworks */ = {isa = PBXBuildFile; productRef = 09296C892E7C0EA10000D871 /* PQSIRCCore */; };
+		09296C8D2E7C0EC40000D871 /* PQSServerCore in Frameworks */ = {isa = PBXBuildFile; productRef = 09296C8C2E7C0EC40000D871 /* PQSServerCore */; };
+		09342F5F2E740AE1007243B3 /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F5E2E740AE1007243B3 /* PostQuantumSolace */; };
+		09342F6D2E740BA2007243B3 /* NeedleTailIRC in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F6C2E740BA2007243B3 /* NeedleTailIRC */; };
+		09342F7E2E7414D3007243B3 /* NeedleTailAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		09296BA52E7C07620000D871 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		09296BB02E7C076E0000D871 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		09296BA72E7C07620000D871 /* PQSServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PQSServer; sourceTree = BUILT_PRODUCTS_DIR; };
+		09296BB22E7C076E0000D871 /* PQSIRCServer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PQSIRCServer; sourceTree = BUILT_PRODUCTS_DIR; };
+		09342F272E7409EC007243B3 /* PostQuantumSolaceDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PostQuantumSolaceDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		09296BA82E7C07620000D871 /* PQSServer */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PQSServer;
+			sourceTree = "<group>";
+		};
+		09296BB32E7C076E0000D871 /* PQSIRCServer */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PQSIRCServer;
+			sourceTree = "<group>";
+		};
+		09342F292E7409EC007243B3 /* PostQuantumSolaceDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PostQuantumSolaceDemo;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		09296BA42E7C07620000D871 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09296C8D2E7C0EC40000D871 /* PQSServerCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09296BAF2E7C076E0000D871 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09296C8A2E7C0EA10000D871 /* PQSIRCCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09342F242E7409EC007243B3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09296BB92E7C07EE0000D871 /* ConnectionManagerKit in Frameworks */,
+				09342F7E2E7414D3007243B3 /* NeedleTailAlgorithms in Frameworks */,
+				09296B6F2E7C00340000D871 /* ConnectionManagerKit in Frameworks */,
+				09342F6D2E740BA2007243B3 /* NeedleTailIRC in Frameworks */,
+				09342F5F2E740AE1007243B3 /* PostQuantumSolace in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		09342F1E2E7409EC007243B3 = {
+			isa = PBXGroup;
+			children = (
+				09342F292E7409EC007243B3 /* PostQuantumSolaceDemo */,
+				09296BA82E7C07620000D871 /* PQSServer */,
+				09296BB32E7C076E0000D871 /* PQSIRCServer */,
+				09342F712E740BED007243B3 /* Frameworks */,
+				09342F282E7409EC007243B3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		09342F282E7409EC007243B3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				09342F272E7409EC007243B3 /* PostQuantumSolaceDemo.app */,
+				09296BA72E7C07620000D871 /* PQSServer */,
+				09296BB22E7C076E0000D871 /* PQSIRCServer */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		09342F712E740BED007243B3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		09296BA62E7C07620000D871 /* PQSServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09296BAB2E7C07620000D871 /* Build configuration list for PBXNativeTarget "PQSServer" */;
+			buildPhases = (
+				09296BA32E7C07620000D871 /* Sources */,
+				09296BA42E7C07620000D871 /* Frameworks */,
+				09296BA52E7C07620000D871 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				09296BA82E7C07620000D871 /* PQSServer */,
+			);
+			name = PQSServer;
+			packageProductDependencies = (
+				09296C8C2E7C0EC40000D871 /* PQSServerCore */,
+			);
+			productName = PQSServer;
+			productReference = 09296BA72E7C07620000D871 /* PQSServer */;
+			productType = "com.apple.product-type.tool";
+		};
+		09296BB12E7C076E0000D871 /* PQSIRCServer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09296BB62E7C076E0000D871 /* Build configuration list for PBXNativeTarget "PQSIRCServer" */;
+			buildPhases = (
+				09296BAE2E7C076E0000D871 /* Sources */,
+				09296BAF2E7C076E0000D871 /* Frameworks */,
+				09296BB02E7C076E0000D871 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				09296BB32E7C076E0000D871 /* PQSIRCServer */,
+			);
+			name = PQSIRCServer;
+			packageProductDependencies = (
+				09296C892E7C0EA10000D871 /* PQSIRCCore */,
+			);
+			productName = PQSIRCServer;
+			productReference = 09296BB22E7C076E0000D871 /* PQSIRCServer */;
+			productType = "com.apple.product-type.tool";
+		};
+		09342F262E7409EC007243B3 /* PostQuantumSolaceDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09342F492E7409ED007243B3 /* Build configuration list for PBXNativeTarget "PostQuantumSolaceDemo" */;
+			buildPhases = (
+				09342F232E7409EC007243B3 /* Sources */,
+				09342F242E7409EC007243B3 /* Frameworks */,
+				09342F252E7409EC007243B3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				09342F292E7409EC007243B3 /* PostQuantumSolaceDemo */,
+			);
+			name = PostQuantumSolaceDemo;
+			packageProductDependencies = (
+				09342F5E2E740AE1007243B3 /* PostQuantumSolace */,
+				09342F6C2E740BA2007243B3 /* NeedleTailIRC */,
+				09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */,
+				096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */,
+				09296B6E2E7C00340000D871 /* ConnectionManagerKit */,
+			);
+			productName = PostQuantumSolaceDemo;
+			productReference = 09342F272E7409EC007243B3 /* PostQuantumSolaceDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		09342F1F2E7409EC007243B3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					09296BA62E7C07620000D871 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					09296BB12E7C076E0000D871 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					09342F262E7409EC007243B3 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = 09342F222E7409EC007243B3 /* Build configuration list for PBXProject "PostQuantumSolaceDemo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 09342F1E2E7409EC007243B3;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				09342F6B2E740BA2007243B3 /* XCRemoteSwiftPackageReference "needletail-irc" */,
+				09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */,
+				09296B6D2E7C00340000D871 /* XCRemoteSwiftPackageReference "connection-manager-kit" */,
+				09296C882E7C0EA10000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-irc-server" */,
+				09296C8B2E7C0EC40000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-server" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 09342F282E7409EC007243B3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				09342F262E7409EC007243B3 /* PostQuantumSolaceDemo */,
+				09296BA62E7C07620000D871 /* PQSServer */,
+				09296BB12E7C076E0000D871 /* PQSIRCServer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		09342F252E7409EC007243B3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		09296BA32E7C07620000D871 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09296BAE2E7C076E0000D871 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		09342F232E7409EC007243B3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		09296BAC2E7C07620000D871 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		09296BAD2E7C07620000D871 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		09296BB72E7C076E0000D871 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		09296BB82E7C076E0000D871 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		09342F472E7409ED007243B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		09342F482E7409ED007243B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		09342F4A2E7409ED007243B3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PostQuantumSolaceDemo/PostQuantumSolaceDemo.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 2.5;
+			};
+			name = Debug;
+		};
+		09342F4B2E7409ED007243B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = PostQuantumSolaceDemo/PostQuantumSolaceDemo.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 2.5;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		09296BAB2E7C07620000D871 /* Build configuration list for PBXNativeTarget "PQSServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09296BAC2E7C07620000D871 /* Debug */,
+				09296BAD2E7C07620000D871 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09296BB62E7C076E0000D871 /* Build configuration list for PBXNativeTarget "PQSIRCServer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09296BB72E7C076E0000D871 /* Debug */,
+				09296BB82E7C076E0000D871 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09342F222E7409EC007243B3 /* Build configuration list for PBXProject "PostQuantumSolaceDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09342F472E7409ED007243B3 /* Debug */,
+				09342F482E7409ED007243B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		09342F492E7409ED007243B3 /* Build configuration list for PBXNativeTarget "PostQuantumSolaceDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				09342F4A2E7409ED007243B3 /* Debug */,
+				09342F4B2E7409ED007243B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		09296C882E7C0EA10000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-irc-server" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../Servers/pqs-irc-server";
+		};
+		09296C8B2E7C0EC40000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-server" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../Servers/pqs-server";
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		09296B6D2E7C00340000D871 /* XCRemoteSwiftPackageReference "connection-manager-kit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/needletails/connection-manager-kit";
+			requirement = {
+				branch = websockets;
+				kind = branch;
+			};
+		};
+		09342F6B2E740BA2007243B3 /* XCRemoteSwiftPackageReference "needletail-irc" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/needletails/needletail-irc";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+		09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/needletails/needletail-algorithms";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.4;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		09296B6E2E7C00340000D871 /* ConnectionManagerKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09296B6D2E7C00340000D871 /* XCRemoteSwiftPackageReference "connection-manager-kit" */;
+			productName = ConnectionManagerKit;
+		};
+		09296C892E7C0EA10000D871 /* PQSIRCCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PQSIRCCore;
+		};
+		09296C8C2E7C0EC40000D871 /* PQSServerCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PQSServerCore;
+		};
+		09342F5E2E740AE1007243B3 /* PostQuantumSolace */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PostQuantumSolace;
+		};
+		09342F6C2E740BA2007243B3 /* NeedleTailIRC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09342F6B2E740BA2007243B3 /* XCRemoteSwiftPackageReference "needletail-irc" */;
+			productName = NeedleTailIRC;
+		};
+		09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */;
+			productName = NeedleTailAlgorithms;
+		};
+		096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ConnectionManagerKit;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 09342F1F2E7409EC007243B3 /* Project object */;
+}

@@ -1,0 +1,49 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode - user data and derived products
+**/DerivedData/
+**/build/
+**/*.moved-aside
+**/*.xcuserstate
+**/*.xcscmblueprint
+**/*.xccheckout
+**/*.xcuserdatad/
+
+# Xcode workspaces and schemes (user-specific)
+**/*.xcworkspace/xcuserdata/
+**/*.xcodeproj/project.xcworkspace/xcuserdata/
+**/*.xcodeproj/xcuserdata/
+
+# Skip specific workspace artifacts
+Skip/**/Intermediates.noindex/
+Skip/**/Project.xcworkspace/
+
+# Swift Package Manager
+.swiftpm/
+**/.swiftpm/
+**/.build/
+**/SourcePackages/
+**/Packages/
+
+# SwiftPM plugin artifacts
+**/.swiftpm/xcode/
+**/.swiftpm/indices/
+
+# SPM/Xcode resolved workspace data (recreated as needed)
+**/Package.pins
+
+# Fastlane generated files (optional)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# IDEs/editors
+.vscode/
+.idea/
+
+# Logs
+*.log
