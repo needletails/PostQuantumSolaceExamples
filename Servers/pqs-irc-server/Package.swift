@@ -13,7 +13,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.28.0"),
         .package(url: "https://github.com/needletails/needletail-irc.git", branch: "main"),
-        .package(url: "https://github.com/needletails/connection-manager-kit.git", branch: "websockets")
+        .package(url: "https://github.com/needletails/connection-manager-kit.git", branch: "websockets"),
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.15.0")
     ],
     targets: [
         .target(
@@ -21,7 +22,8 @@ let package = Package(
             dependencies: [
                 .product(name: "ConnectionManagerKit", package: "connection-manager-kit"),
                 .product(name: "NeedleTailIRC", package: "needletail-irc"),
-                .product(name: "AsyncHTTPClient", package: "async-http-client")
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "Crypto", package: "swift-crypto")
             ],
             path: "Sources/PQSIRCCore"
         ),

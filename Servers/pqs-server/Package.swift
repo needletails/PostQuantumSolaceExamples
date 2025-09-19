@@ -13,7 +13,8 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/hummingbird-project/hummingbird.git", from: "2.16.0"),
         .package(url: "https://github.com/hummingbird-project/hummingbird-websocket.git", from: "2.6.0"),
-        .package(url: "https://github.com/needletails/needletail-irc.git", branch: "main" )
+        .package(url: "https://github.com/needletails/needletail-irc.git", branch: "main" ),
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.15.0")
     ],
     targets: [
         .target(
@@ -24,7 +25,8 @@ let package = Package(
                 .product(name: "HummingbirdRouter", package: "hummingbird"),
                 .product(name: "HummingbirdWebSocket", package: "hummingbird-websocket"),
                 .product(name: "HummingbirdWSCompression", package: "hummingbird-websocket"),
-                .product(name: "NeedleTailIRC", package: "needletail-irc")
+                .product(name: "NeedleTailIRC", package: "needletail-irc"),
+                .product(name: "Crypto", package: "swift-crypto")
             ],
             path: "Sources/PQSServerCore"
         ),

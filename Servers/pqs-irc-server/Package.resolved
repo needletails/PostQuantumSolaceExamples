@@ -1,5 +1,5 @@
 {
-  "originHash" : "5be89bc050bce7d75794123ad93db329e5fc39b4e3ce8b80cc2097a3dba435b2",
+  "originHash" : "64b324dbc5c5951f7449f3023bcdb5f77d9cfd6e3200d2c43428fab6acccea91",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -25,7 +25,7 @@
       "location" : "https://github.com/needletails/connection-manager-kit.git",
       "state" : {
         "branch" : "websockets",
-        "revision" : "a9a86d522bc0262b56736d17961755807836bebf"
+        "revision" : "7e0b5ff377abee6778c470f04a0e0c9664e9356f"
       }
     },
     {

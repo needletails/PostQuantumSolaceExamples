@@ -34,6 +34,7 @@ Skip/**/Project.xcworkspace/
 
 # SPM/Xcode resolved workspace data (recreated as needed)
 **/Package.pins
+**/Package.resolved
 
 # Fastlane generated files (optional)
 fastlane/report.xml
@@ -47,3 +48,48 @@ fastlane/test_output/
 
 # Logs
 *.log
+
+# Flatpak/AppStream build artifacts
+/build-dir/
+/build/
+/run/
+/.flatpak-builder/
+/.flatpak/
+/flatpak-builder/
+/flatpak/
+
+# Flatpak manifest and build state
+manifest.json
+*.flatpak
+*.flatpakref
+*.flatpakrepo
+
+# AppStream metadata build artifacts
+*.appdata.xml
+*.metainfo.xml.bak
+
+# Gnome/GTK development
+.gtk-*
+.gnome-*
+
+# Meson build system (if used)
+builddir/
+_build/
+meson-logs/
+meson-private/
+
+# Additional build artifacts
+/.build
+xcuserdata/
+.swiftpm/config/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Local configuration
+.netrc
+local.properties

@@ -8,7 +8,7 @@ import NeedleTailIRC
 import NeedleTailLogger
 import ConnectionManagerKit
 import BSON
-import CryptoKit
+@preconcurrency import Crypto
 import AsyncHTTPClient
 
 actor SessionManager {

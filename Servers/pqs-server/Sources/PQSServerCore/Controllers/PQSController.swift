@@ -6,11 +6,11 @@
 //
 import Foundation
 import Hummingbird
+import HummingbirdCore
 import HummingbirdHTTP2
 import HummingbirdRouter
 import BSON
-import CryptoKit
-
+@preconcurrency import Crypto
 import AsyncAlgorithms
 import ServiceLifecycle
 
@@ -191,7 +191,7 @@ extension Data: @retroactive ResponseGenerator {
     public func response(from request: HummingbirdCore.Request, context: some Hummingbird.RequestContext) throws -> HummingbirdCore.Response {
         return Response(
             status: .ok,
-            body: .init(byteBuffer: ByteBuffer(data: self))
+            body: .init(byteBuffer: ByteBuffer(bytes: self))
         )
     }
 }

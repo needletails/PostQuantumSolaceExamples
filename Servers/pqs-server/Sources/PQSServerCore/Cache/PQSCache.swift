@@ -7,7 +7,7 @@
 
 
 import Foundation
-import CryptoKit
+@preconcurrency import Crypto
 import BSON
 
 public actor PQSCache {
