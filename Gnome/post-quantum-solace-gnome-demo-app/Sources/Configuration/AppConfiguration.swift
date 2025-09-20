@@ -26,7 +26,7 @@ struct AppConfiguration {
 
     // MARK: - API Configuration
     struct API {
-        static let baseURL = "http://{your-host-name}:8080"
+        static let baseURL = "http://{your-host-name}.local:8080"
         static let timeout: TimeInterval = 30.0
     }
 
