@@ -15,15 +15,21 @@ struct ChatViewAdw: View {
 	@State private var listenerInstalled = false
 
 	var view: Body {
-		VStack(spacing: 8) {
+		VStack {
 			// Messages
 			ScrollView {
-				ForEach(messages.map { IdentifiedMessage(message: $0) }) { item in
-					MessageBubbleAdw(encrypted: item.message)
+				VStack(spacing: 8) {
+					ForEach(messages.map { IdentifiedMessage(message: $0) }) { item in
+						MessageBubbleAdw(encrypted: item.message)
+					}
 				}
+				.padding(8)
 			}
 			.vexpand()
 			.hexpand()
+			
+			// Separator
+			Separator()
 
 			// Composer
 			HStack(spacing: 8) {
@@ -40,15 +46,17 @@ struct ChatViewAdw: View {
 		}
 		.padding(12)
 		.onAppear {
-			Task { @MainActor in messages = receiver.messages }
-			if !listenerInstalled {
-				listenerInstalled = true
-				Task { @MainActor in
-					receiver.onNewMessage = { msg in
-						Task { @MainActor in messages.append(msg) }
-					}
-				}
-			}
+            Task { @MainActor in 
+                messages = receiver.messages
+                if !listenerInstalled {
+                    listenerInstalled = true
+                    receiver.onNewMessage = { msg in
+                        Task { @MainActor in 
+                            messages.append(msg)
+                        }
+                    }
+                }
+            }
 		}
         
 		// Adwaita AnyView lacks .onChange; poll or react via receiver updates elsewhere

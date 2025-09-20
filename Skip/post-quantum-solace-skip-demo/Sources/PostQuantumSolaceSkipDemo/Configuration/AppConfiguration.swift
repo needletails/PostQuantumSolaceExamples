@@ -12,7 +12,7 @@ import NeedleTailLogger
 struct AppConfiguration {
     // MARK: - Server Configuration
     struct Server {
-        static let host = "needletails.local"
+        static let host = "{your-host-name}.local"
         static let port: Int = 6667
         static let enableTLS = false
         static let cacheKey = "pqs_demo"
@@ -23,7 +23,7 @@ struct AppConfiguration {
     
     // MARK: - API Configuration
     struct API {
-        static let baseURL = "http://needletails.local:8080"
+        static let baseURL = "http://{your-host-name}.local:8080"
         static let timeout: TimeInterval = 30.0
     }
     

@@ -14,6 +14,7 @@
 		09342F5F2E740AE1007243B3 /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F5E2E740AE1007243B3 /* PostQuantumSolace */; };
 		09342F6D2E740BA2007243B3 /* NeedleTailIRC in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F6C2E740BA2007243B3 /* NeedleTailIRC */; };
 		09342F7E2E7414D3007243B3 /* NeedleTailAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */; };
+		09878CBB2E7E304A00EAB76A /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 09878CBA2E7E304A00EAB76A /* PostQuantumSolace */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -87,6 +88,7 @@
 				09296B6F2E7C00340000D871 /* ConnectionManagerKit in Frameworks */,
 				09342F6D2E740BA2007243B3 /* NeedleTailIRC in Frameworks */,
 				09342F5F2E740AE1007243B3 /* PostQuantumSolace in Frameworks */,
+				09878CBB2E7E304A00EAB76A /* PostQuantumSolace in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,6 +194,7 @@
 				09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */,
 				096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */,
 				09296B6E2E7C00340000D871 /* ConnectionManagerKit */,
+				09878CBA2E7E304A00EAB76A /* PostQuantumSolace */,
 			);
 			productName = PostQuantumSolaceDemo;
 			productReference = 09342F272E7409EC007243B3 /* PostQuantumSolaceDemo.app */;
@@ -233,6 +236,7 @@
 				09296B6D2E7C00340000D871 /* XCRemoteSwiftPackageReference "connection-manager-kit" */,
 				09296C882E7C0EA10000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-irc-server" */,
 				09296C8B2E7C0EC40000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-server" */,
+				09878CB92E7E304A00EAB76A /* XCRemoteSwiftPackageReference "post-quantum-solace" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 09342F282E7409EC007243B3 /* Products */;
@@ -596,6 +600,14 @@
 				minimumVersion = 2.0.4;
 			};
 		};
+		09878CB92E7E304A00EAB76A /* XCRemoteSwiftPackageReference "post-quantum-solace" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/needletails/post-quantum-solace";
+			requirement = {
+				branch = os/android;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -629,6 +641,11 @@
 		096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ConnectionManagerKit;
+		};
+		09878CBA2E7E304A00EAB76A /* PostQuantumSolace */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09878CB92E7E304A00EAB76A /* XCRemoteSwiftPackageReference "post-quantum-solace" */;
+			productName = PostQuantumSolace;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

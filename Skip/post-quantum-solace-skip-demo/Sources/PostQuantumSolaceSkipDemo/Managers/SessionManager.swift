@@ -5,15 +5,15 @@
 //  Created by Cole M on 9/12/25.
 //
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import PQSSession
 import ConnectionManagerKit
 import NeedleTailLogger
 import NeedleTailIRC
 import NeedleTailAsyncSequence
 import NTKLoop
-#if canImport(Network)
-import Network
-#endif
 import BSON
 
 let logger = NeedleTailLogger("PQSDemoLogger")
@@ -23,8 +23,6 @@ actor SessionManager {
     
     let receiver: MessageReceiverManager
     let useWebSockets: Bool
-    
-
     
     init(receiver: MessageReceiverManager, useWebSockets: Bool = false) {
         self.receiver = receiver
@@ -135,10 +133,10 @@ actor SessionManager {
         transport: SessionTransport? = nil,
     ) async throws {
         if useWebSockets {
-            let value = await Task { @MainActor in
-               return transport ?? WebSocketTransportManager(logger: logger, socket: socket)
+            let wsTransport = await Task { @MainActor in
+                transport ?? WebSocketTransportManager(logger: logger, socket: socket)
             }.value
-            self.transport = value
+            self.transport = wsTransport
         } else {
             let transport = transport ?? SessionTransportManager(logger: logger)
             self.transport = transport

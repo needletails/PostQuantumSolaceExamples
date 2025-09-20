@@ -18,7 +18,7 @@ import NeedleTailLogger
 public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sendable {
     
     // MARK: - Properties
-    internal unowned let messageReciever: MessageReceiverManager
+    internal weak var messageReciever: MessageReceiverManager?
     internal let pqsSession: PQSSession
     internal let logger: NeedleTailLogger
     
@@ -243,7 +243,7 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
                 props?.sharedId = UUID(uuidString: message.text)
                 _ = try await communicationModel.updateProps(symmetricKey: symmetricKey, props: props)
                 try await cache.updateCommunication(communicationModel)
-                if let members = props?.members {
+                if let members = props?.members, let messageReciever = messageReciever {
                     await messageReciever.updatedCommunication(communicationModel, members: members)
                 }
                 self.logger.log(level: .debug, message: "Updated Communication Model For Synchronization with Shared Id: \(String(describing: props?.sharedId))")
@@ -266,10 +266,12 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
                 let isMe = senderSecretName == mySecretName
                 
                 //Passthrough nothing special to do
-                await messageReciever.receivedLocalNudge(
-                    message,
-                    sender: isMe ? mySecretName : senderSecretName,
-                    senderDeviceId: isMe ? myDeviceId : senderDeviceId.uuidString)
+                if let messageReciever = messageReciever {
+                    await messageReciever.receivedLocalNudge(
+                        message,
+                        sender: isMe ? mySecretName : senderSecretName,
+                        senderDeviceId: isMe ? myDeviceId : senderDeviceId.uuidString)
+                }
             }
             return true
         } catch {

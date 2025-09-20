@@ -1,5 +1,5 @@
 {
-  "originHash" : "54286533d1232ef434ba378961d74d02c5178b6917a4965c5f19a2ba7877272c",
+  "originHash" : "3685f6e9564c8bd2403cac85035dfd2c0e83aa5585488bd79e2a2e8a9799e5e0",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -38,6 +38,15 @@
       }
     },
     {
+      "identity" : "double-ratchet-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/needletails/double-ratchet-kit.git",
+      "state" : {
+        "revision" : "3e04c08cbbc1fe6ab383295e23119378315f6a88",
+        "version" : "1.0.5"
+      }
+    },
+    {
       "identity" : "hummingbird",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/hummingbird-project/hummingbird.git",
@@ -65,6 +74,15 @@
       }
     },
     {
+      "identity" : "needletail-crypto",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/needletails/needletail-crypto.git",
+      "state" : {
+        "revision" : "4a33f8d023a732623c4f3159dc7d6843c7881029",
+        "version" : "1.1.8"
+      }
+    },
+    {
       "identity" : "needletail-irc",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/needletails/needletail-irc",
@@ -80,6 +98,15 @@
       "state" : {
         "revision" : "5ffaf7f9bc9fa1c1f28e092e20fb3e9b48569921",
         "version" : "3.1.2"
+      }
+    },
+    {
+      "identity" : "post-quantum-solace",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/needletails/post-quantum-solace",
+      "state" : {
+        "branch" : "os/android",
+        "revision" : "0ac8113837a9091023a334c67ce32748eb51fa7c"
       }
     },
     {
@@ -188,6 +215,15 @@
       "state" : {
         "revision" : "747b4999e9426bafb6fa676f5989b33694fba8ad",
         "version" : "0.3.0"
+      }
+    },
+    {
+      "identity" : "swift-kyber",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/needletails/swift-kyber.git",
+      "state" : {
+        "revision" : "e811bba6237d93f17013f0a604ed95ce525dfb43",
+        "version" : "1.0.1"
       }
     },
     {

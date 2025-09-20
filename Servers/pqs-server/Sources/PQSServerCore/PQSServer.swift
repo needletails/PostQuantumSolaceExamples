@@ -36,7 +36,7 @@ public enum PQSServer {
         var app = Application(
             router: router,
             server: .http1WebSocketUpgrade(webSocketRouter: wsRouter, configuration: .init(maxFrameSize: 500_000, extensions: [.perMessageDeflate()])),
-            configuration: .init(address: .hostname("127.0.0.1", port: 8080)),
+            configuration: .init(address: .hostname("0.0.0.0", port: 8080)),
             logger: appLogger
         )
         app.addServices(connectionManager)

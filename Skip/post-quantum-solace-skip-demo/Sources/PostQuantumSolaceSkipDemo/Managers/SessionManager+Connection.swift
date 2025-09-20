@@ -7,27 +7,39 @@
 import NeedleTailIRC
 import ConnectionManagerKit
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import BSON
+import NIO
+@preconcurrency import Crypto
+
 // MARK: - ConnectionManagerDelegate
 extension SessionManager: ConnectionManagerDelegate {
     typealias Inbound = IRCPayload
     typealias Outbound = IRCPayload
-    
+
     nonisolated func retrieveChannelHandlers() -> [any NIOCore.ChannelHandler] {
-        [ByteToMessageHandler(IRCPayloadDecoder()),
+        logger.log(level: .info, message: "Retrieving channel handlers")
+        return [ByteToMessageHandler(IRCPayloadDecoder()),
          MessageToByteHandler(IRCPayloadEncoder())]
     }
-    
+
     func createNetworkConnection() async throws {
         if useWebSockets {
-            
+
             guard let sessionContext = await pqsSession.sessionContext else {
                return
             }
 
             let mySecretName = sessionContext.sessionUser.secretName
-            
-            try await socket.connect(host: "needletails.local", port: 8080, route: "/api/auth/ws?secretName=\(mySecretName)", autoPingPongInterval: 5)
+
+            try await socket.connect(
+            host: AppConfiguration.Server.host,
+            port: 8080,
+            route: "/api/auth/ws?secretName=\(mySecretName)",
+            autoPingPongInterval: 5)
+
             if eventStreamTask == nil {
                 eventStreamTask = Task {
                     for try await event in await socket.socketReceiver.eventStream! {
@@ -55,7 +67,7 @@ extension SessionManager: ConnectionManagerDelegate {
                     }
                 }
             }
-            
+
            try await taskLoop.run(10, sleep: .seconds(1)) {
                if await socket.socketReceiver.messageStream != nil {
                     return false
@@ -63,7 +75,7 @@ extension SessionManager: ConnectionManagerDelegate {
                     return true
                 }
             }
-            
+
             if messageStreamTask == nil {
                 messageStreamTask = Task {
                     for try await frame in await socket.socketReceiver.messageStream! {
@@ -87,10 +99,7 @@ extension SessionManager: ConnectionManagerDelegate {
             }
         } else {
             await connectionManager.setDelegate(self)
-            
-            // Wait before attempting connection
-            try await Task.sleep(until: .now + .seconds(AppConfiguration.Server.initialDelay))
-            
+
             try await connectionManager.connect(
                 to: [.init(
                     host: AppConfiguration.Server.host,
@@ -98,42 +107,46 @@ extension SessionManager: ConnectionManagerDelegate {
                     enableTLS: AppConfiguration.Server.enableTLS,
                     cacheKey: AppConfiguration.Server.cacheKey
                 )],
-                maxReconnectionAttempts: AppConfiguration.Server.maxReconnectionAttempts,
-                timeout: .seconds(Int64(AppConfiguration.Server.connectionTimeout)),
                 tlsPreKeyed: nil
             )
         }
     }
-    
-    func createInitialTransportClosure() -> @Sendable () async throws -> Void {
+
+    func createInitialTransportClosure() async -> @Sendable () async throws -> Void {
         { [weak self] in
             guard let self = self else { return }
             try await createNetworkConnection()
         }
     }
-    
+
     func channelCreated(_ eventLoop: any NIOCore.EventLoop, cacheKey: String) async {
+        logger.log(level: .info, message: "Channel created")
         if useWebSockets {
             return
         }
+        pqsSession.isViable = true
         guard let delegate else {
             logger.log(level: .error, message: "No delegate set for channel creation")
             return
         }
-        
+
         let connection = IRCConnection(
             connectionManager: connectionManager,
             executor: .init(eventLoop: eventLoop, shouldExecuteAsTask: true),
             logger: logger,
             delegate: delegate
         )
-        
+
+         await connectionManager.setDelegates(
+            connectionDelegate: connection,
+            contextDelegate: connection,
+            cacheKey: AppConfiguration.Server.cacheKey)
+
         await connection.connectionManager.setDelegates(
             connectionDelegate: connection,
             contextDelegate: connection,
-            cacheKey: AppConfiguration.Server.cacheKey
-        )
-        
+            cacheKey: AppConfiguration.Server.cacheKey)
+
         if let transport = transport as? SessionTransportManager {
             await transport.setConnection(connection)
         }

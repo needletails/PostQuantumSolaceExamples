@@ -101,9 +101,6 @@ extension SessionManager: ConnectionManagerDelegate {
         } else {
             await connectionManager.setDelegate(self)
 
-            // Wait before attempting connection
-            try await Task.sleep(until: .now + .seconds(AppConfiguration.Server.initialDelay))
-
             try await connectionManager.connect(
                 to: [.init(
                     host: AppConfiguration.Server.host,
@@ -111,44 +108,12 @@ extension SessionManager: ConnectionManagerDelegate {
                     enableTLS: AppConfiguration.Server.enableTLS,
                     cacheKey: AppConfiguration.Server.cacheKey
                 )],
-                tlsPreKeyed: getTLSPreKey()
+                tlsPreKeyed: nil
             )
         }
     }
-	struct PSKCredential {
-		let key: String
-		let hint: String
-	}
 
-    func getTLSPreKey() -> TLSPreKeyedConfiguration {
-	let credentials = PSKCredential(key: "random-key", hint: "random-hint")
-
-	let pskClientProvider: NIOPSKClientIdentityProvider = { _ in
-		var psk = NIOSSLSecureBytes()
-
-		guard let keyData = credentials.key.data(using: .utf8) else {
-			fatalError("")
-		}
-
-		guard let hintData = credentials.key.data(using: .utf8) else {
-			fatalError("")
-		}
-
-		let authenticationKey = SymmetricKey(data: keyData)
-		let authenticationCode = HMAC<SHA256>.authenticationCode(for: hintData, using: authenticationKey)
-		let authenticationData = authenticationCode.withUnsafeBytes { Data($0) }
-		psk.append(authenticationData)
-		return PSKClientIdentityResponse(key: psk, identity: "clientIdentity")
-	}
-	var tls = TLSConfiguration.makePreSharedKeyConfiguration()
-	tls.cipherSuiteValues = [.TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA]
-	tls.maximumTLSVersion = TLSVersion.tlsv13
-	tls.pskClientProvider = pskClientProvider
-	tls.pskHint = "random-hint"
-	return TLSPreKeyedConfiguration(tlsConfiguration: tls)
-    }
-
-    func createInitialTransportClosure() -> @Sendable () async throws -> Void {
+    func createInitialTransportClosure() async -> @Sendable () async throws -> Void {
         { [weak self] in
             guard let self = self else { return }
             try await createNetworkConnection()
@@ -160,6 +125,7 @@ extension SessionManager: ConnectionManagerDelegate {
         if useWebSockets {
             return
         }
+        pqsSession.isViable = true
         guard let delegate else {
             logger.log(level: .error, message: "No delegate set for channel creation")
             return
@@ -175,14 +141,12 @@ extension SessionManager: ConnectionManagerDelegate {
          await connectionManager.setDelegates(
             connectionDelegate: connection,
             contextDelegate: connection,
-            cacheKey: AppConfiguration.Server.cacheKey
-        )
+            cacheKey: AppConfiguration.Server.cacheKey)
 
         await connection.connectionManager.setDelegates(
             connectionDelegate: connection,
             contextDelegate: connection,
-            cacheKey: AppConfiguration.Server.cacheKey
-        )
+            cacheKey: AppConfiguration.Server.cacheKey)
 
         if let transport = transport as? SessionTransportManager {
             await transport.setConnection(connection)

@@ -5,16 +5,18 @@
 //  Created by Cole M on 9/12/25.
 //
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import BSON
 import PQSSession
-#if canImport(Network)
-import Network
-#endif
 import NeedleTailLogger
 import ConnectionManagerKit
 import NeedleTailIRC
 import NeedleTailAsyncSequence
-
+#if canImport(Network)
+import Network
+#endif
 
 /**
  _IRCConnection_ Manages IRC Connections(Transport) via **ConnectionManagerKit**. Not **PostQuantumSolace** Specific.
@@ -62,17 +64,10 @@ actor IRCConnection {
         // Update UI state if needed
     }
     
-#if canImport(Network)
-    @MainActor
-    func setPathStatus(_ status: NWPath.Status) async {
-        logger.log(level: .debug, message: "Network path status: \(status)")
-    }
-#else
     @MainActor
     func setPathStatus(_ isActive: Bool) async {
         logger.log(level: .debug, message: "Network path active: \(isActive)")
     }
-#endif
 }
 
 // MARK: - ChannelContextDelegate, ConnectionDelegate, NeedleTailWriterDelegate
@@ -106,16 +101,20 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
         )
     }
     
+    enum ClientType: Codable {
+        case server, client
+    }
+    
     func deliverWriter<Outbound, Inbound>(context: ConnectionManagerKit.WriterContext<Inbound, Outbound>) async where Outbound : Sendable, Inbound : Sendable {
         self.writer = (context.writer as! NIOAsyncChannelOutboundWriter<IRCPayload>)
-        
+
         do {
             // Send password
-            let passTag = IRCTag(key: "pass-tag", value: "client")
+            let value = try BSONEncoder().encode(ClientType.client).makeData().base64EncodedString()
+            let passTag = IRCTag(key: "pass-tag", value: value)
             try await self.transportMessage(
                 command: .otherCommand(Constants.pass.rawValue, [""]),
-                tags: [passTag]
-            )
+                tags: [passTag])
             
             // Send nickname registration
             let tempTag = IRCTag(key: "temporary-registration", value: "true")
@@ -126,8 +125,7 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
             
             try await transportMessage(
                 command: .nick(.init(name: sessionUser.secretName, deviceId: sessionUser.deviceId)!),
-                tags: [tempTag]
-            )
+                tags: [tempTag])
             
             logger.log(level: .info, message: "IRC registration completed successfully")
             
@@ -165,9 +163,19 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
         switch message.command {
         case .privMsg(let recipients, let payload):
             try await handlePrivateMessage(recipients: recipients, payload: payload, origin: originalMessage.origin)
+        case .ping(let origin, let origin2):
+            try! await doPong(source: origin, secondarySource: origin2)
         default:
             logger.log(level: .debug, message: "Received IRC command: \(message.command)")
         }
+    }
+    
+    private func doPong(source: String, secondarySource: String? = nil) async throws {
+        do {
+            try await Task.sleep(until: .now + .seconds(5), tolerance: .seconds(2), clock: .continuous)
+            try await self.transportMessage(command: .pong(server: source, server2: secondarySource))
+        } catch {}
+        self.logger.log(level: .trace, message: "Send Pong")
     }
     
     private func handlePrivateMessage(recipients: [IRCMessageRecipient], payload: String, origin: String?) async throws {
@@ -225,23 +233,27 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
     // MARK: - ConnectionDelegate Methods
     
     nonisolated func channelActive(_ stream: AsyncStream<Void>, id: String) {
-        logger.log(level: .info, message: "Channel active: \(id)")
-#if os(Android)
+#if os(Linux) || os(Android)
         Task { [weak self] in
             guard let self else { return }
-            await setViability(true)
+            for await event in stream {
+                logger.log(level: .info, message: "Channel active: \(id), event \(event)")
+                await setViability(true)
+            }
         }
 #endif
     }
     
     nonisolated func channelInactive(_ stream: AsyncStream<Void>, id: String) {
-        logger.log(level: .info, message: "Channel inactive: \(id)")
-//#if os(Android)
-//        Task { [weak self] in
-//            guard let self else { return }
-//            await setViability(false)
-//        }
-//#endif
+#if os(Linux) || os(Android)
+        Task { [weak self] in
+            guard let self else { return }
+            for await event in stream {
+                logger.log(level: .info, message: "Channel inactive: \(id), event \(event)")
+                await setViability(false)
+            }
+        }
+#endif
     }
     
     func reportChildChannel(error: any Error, id: String) async {
@@ -252,7 +264,37 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
         logger.log(level: .info, message: "Child channel shutdown")
     }
     
-#if canImport(Network)
+#if os(Linux) || os(Android)
+    nonisolated func handleError(_ stream: AsyncStream<IOError>, id: String) {
+        if handleErrorEventsTask == nil {
+            handleErrorEventsTask = Task {
+                for await error in stream {
+                    logger.log(level: .error, message: "\(error)")
+                }
+            }
+        }
+    }
+    
+    func handleNetworkEvents(_ stream: AsyncStream<NetworkEventMonitor.NIOEvent>, id: String) async {
+        if handleNetworkEventsTask == nil {
+            self.handleNetworkEventsTask = Task(executorPreference: self.executor) { [weak self] in
+                guard let self else { return }
+                await withDiscardingTaskGroup { group in
+                    for await event in stream {
+                        group.addTask(executorPreference: self.executor) {
+                            switch event {
+                            case .event(_):
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+#elseif canImport(Network)
+    
     nonisolated func handleError(_ stream: AsyncStream<NWError>, id: String) {
         if handleErrorEventsTask == nil {
             handleErrorEventsTask = Task {
@@ -292,34 +334,7 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
             }
         }
     }
-#else
-    nonisolated func handleError(_ stream: AsyncStream<IOError>, id: String) {
-        if handleErrorEventsTask == nil {
-            handleErrorEventsTask = Task {
-                for await event in stream {
-                    logger.log(level: .info, message: "Error EVENT: \(event)")
-                }
-            }
-        }
-
-    }
-    
-    func handleNetworkEvents(_ stream: AsyncStream<NetworkEventMonitor.NIOEvent>, id: String) async {
-        if handleNetworkEventsTask == nil {
-            self.handleNetworkEventsTask = Task(executorPreference: self.executor) { [weak self] in
-                guard let self else { return }
-                await withDiscardingTaskGroup { group in
-                    for await event in stream {
-                        group.addTask(executorPreference: self.executor) { [weak self] in
-                            guard let self else { return }
-                            logger.log(level: .info, message: "NETWORK EVENT: \(event)")
-                        }
-                    }
-                }
-            }
-        }
-    }
-#endif
+    #endif
     
     func initializedChildChannel<Outbound, Inbound>(_ context: ConnectionManagerKit.ChannelContext<Inbound, Outbound>) async where Outbound : Sendable, Inbound : Sendable {
         logger.log(level: .info, message: "Child channel initialized: \(context.id)")

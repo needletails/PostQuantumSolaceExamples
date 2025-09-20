@@ -58,7 +58,7 @@ actor SessionManager {
     
     private func unregisterExistingSession(for needletailNick: NeedleTailNick, currentSession: SessionHandler) async throws {
         for session in await cache.findUserSessions() {
-            if await session.sessionInfo.nick?.deviceId == needletailNick.deviceId {
+            if await session.sessionInfo.nick!.name == needletailNick.name {
                 try await unregisterSession(session)
             }
         }
@@ -99,8 +99,8 @@ actor SessionCache {
     /// Deletes the session associated with the given nickname.
     /// - Throws: An error if the session does not exist.
     func removeSession(nick: NeedleTailNick) async throws {
-        guard sessions.removeValue(forKey: nick) != nil else {
-            return
+        if sessions.removeValue(forKey: nick) == nil {
+            fatalError("Failed to remove session for \(nick): session does not exist")
         }
     }
 }
@@ -213,7 +213,7 @@ actor SessionHandler: NeedleTailWriterDelegate, Identifiable, Hashable {
     func setWriter(writer: NIOAsyncChannelOutboundWriter<IRCPayload>) async {
         self.writer = writer
     }
-
+    
     func unregisterCurrentSesssion() async throws {
         try await sessionConfiguration.sessionManager.unregisterSession(self)
     }
@@ -245,7 +245,7 @@ actor SessionHandler: NeedleTailWriterDelegate, Identifiable, Hashable {
             break
         }
     }
-   
+    
     func doMessage(
         senderID: IRCUserIdentifier?,
         recipients: [IRCMessageRecipient],
@@ -278,12 +278,13 @@ actor SessionHandler: NeedleTailWriterDelegate, Identifiable, Hashable {
                     if response.status == .ok {
                         print("Created User", nick)
                         try await sessionConfiguration.sessionManager.registerSession(self, needletailNick: nick)
-                     } else {
-                         print("Failed To Create User")
-                     }
-
+                    } else {
+                        print("Failed To Create User")
+                    }
+                    
                 case .privateMessage, .addContacts, .communicationSynchronization, .contactCreated, .friendshipStateRequest:
                     self.logger.log(level: .info, message: "Searching for session for \(nick)")
+                    //TODO: Ensure that unregister removes the session i think that we are sending on an old session causing closed channel error
                     if let session = await sessionConfiguration.sessionManager.getSessions().async.first(where: { await $0.sessionInfo.nick == nick }) {
                         let sender = IRCUserIdentifier(nick: senderID!.nick)
                         try await doSendMessage(messagePacket,
@@ -303,10 +304,10 @@ actor SessionHandler: NeedleTailWriterDelegate, Identifiable, Hashable {
     }
     
     func doSendMessage(_
-                               messagePacket: MessagePacket,
-                               sender: IRCUserIdentifier,
-                               recipient: IRCMessageRecipient,
-                               targetSession: SessionHandler
+                       messagePacket: MessagePacket,
+                       sender: IRCUserIdentifier,
+                       recipient: IRCMessageRecipient,
+                       targetSession: SessionHandler
     ) async throws {
         self.logger.log(level: .info, message: "Sender: \(sender) is sending message to Recipient: \(recipient)")
         let senderString = try BSONEncoder().encode(sender).makeData().base64EncodedString()
@@ -354,7 +355,7 @@ actor SessionHandler: NeedleTailWriterDelegate, Identifiable, Hashable {
     
     func getSender(_ message: IRCMessage) async throws -> IRCUserIdentifier {
         guard let origin = message.origin else {
-           fatalError()
+            fatalError()
         }
         guard let data = Data(base64Encoded: origin) else { throw NeedleTailError.nilData }
         do {
@@ -388,20 +389,14 @@ extension SessionHandler: ChannelContextDelegate {
     func didShutdownChildChannel() async {}
     
     func deliverWriter<Outbound, Inbound>(context: ConnectionManagerKit.WriterContext<Inbound, Outbound>) async where Outbound : Sendable, Inbound : Sendable {
-        Task { [weak self] in
-            guard let self = self else { return }
-                guard let outboundWriter = context.writer as? NIOAsyncChannelOutboundWriter<IRCPayload> else { fatalError() }
-                await self.setWriter(writer: outboundWriter)
-            let source = await self.sessionConfiguration.sessionManager.origin
-            try? await self.doPing(source: source, secondarySource: nil)
-        }
+        guard let outboundWriter = context.writer as? NIOAsyncChannelOutboundWriter<IRCPayload> else { fatalError() }
+        await self.setWriter(writer: outboundWriter)
+        let source = self.sessionConfiguration.sessionManager.origin
+        try? await self.doPing(source: source, secondarySource: nil)
     }
     
     func deliverInboundBuffer<Inbound, Outbound>(context: ConnectionManagerKit.StreamContext<Inbound, Outbound>) async where Inbound : Sendable, Outbound : Sendable {
-        Task { [weak self] in
-            guard let self = self else { return }
-            await self.processInboundBuffer(context: context)
-        }
+        await self.processInboundBuffer(context: context)
     }
     
     private func processInboundBuffer<Inbound, Outbound>(
@@ -455,7 +450,7 @@ public enum MessageFlag: String, Codable, Sendable {
 }
 
 public struct MessagePacket: Codable, Sendable, Equatable {
-
+    
     public let id: String
     public let flag: MessageFlag
     public let userConfiguration: UserConfiguration?
@@ -584,7 +579,7 @@ public struct UserConfiguration: Codable, Sendable, Equatable {
     public func getVerifiedKeys(deviceId: UUID) async throws -> [Curve25519PublicKeyRepresentable] {
         guard let device = signedDevices.first(where: { $0.id == deviceId }),
               let verifiedDevice = try device.verified(using: try Curve25519.Signing.PublicKey(rawRepresentation: self.signingPublicKey)) else {
-           fatalError()
+            fatalError()
         }
         
         let publicKey = try Curve25519.Signing.PublicKey(rawRepresentation: verifiedDevice.signingPublicKey)
@@ -771,7 +766,7 @@ public struct Curve25519PublicKeyRepresentable: Codable, Sendable {
         self.id = id
         self.rawRepresentation = rawRepresentation
     }
-
+    
 }
 
 public struct Kyber1024PublicKeyRepresentable: Codable, Sendable, Equatable {

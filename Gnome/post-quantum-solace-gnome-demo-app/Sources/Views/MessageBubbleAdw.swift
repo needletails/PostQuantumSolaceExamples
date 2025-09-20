@@ -17,14 +17,36 @@ struct MessageBubbleAdw: View {
 	init(encrypted: EncryptedMessage) { self.encrypted = encrypted }
 
 	var view: Body {
-        VStack {
+        HStack {
             if shouldShow {
-                Text(message)
-                    .padding(10)
+                if isMine {
+                    // Sent message - align to right
+                    VStack(spacing: 4) {
+                        Text(message)
+                            .padding(12)
+                            .halign(.end)
+                        Text(formatTime(date))
+                            .halign(.end)
+                    }
+                    .halign(.end)
+                    .hexpand()
+                } else {
+                    // Received message - align to left
+                    VStack(spacing: 4) {
+                        Text(message)
+                            .padding(12)
+                            .halign(.start)
+                        Text(formatTime(date))
+                            .halign(.start)
+                    }
+                    .halign(.start)
+                    .hexpand()
+                }
             } else if isLoading {
                 Spinner()
             }
         }
+        .padding(8)
         .onAppear {
             Task {
                 await load()

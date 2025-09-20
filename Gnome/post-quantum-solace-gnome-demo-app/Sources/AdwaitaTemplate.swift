@@ -26,20 +26,6 @@ struct PQSDemoApp: App {
                 session: session,
                 store: store
             )
-			.onAppear {
-			Task {
-				let connection = ConnectionManager<IRCPayload, IRCPayload>(logger: logger)
-				try await connection.connect(
-					to: [.init(
-						host: AppConfiguration.Server.host,
-						port: AppConfiguration.Server.port,
-						enableTLS: AppConfiguration.Server.enableTLS,
-						cacheKey: AppConfiguration.Server.cacheKey
-					)],
-					tlsPreKeyed: nil
-				)
-			}
-			}
         }
         .defaultSize(width: 600, height: 450)
     }

@@ -98,77 +98,7 @@ extension IRCServer: ListenerDelegate {
         print("Did bind Server on \(String(describing: channel.channel.localAddress))")
     }
 
-    public nonisolated func retrieveSSLHandler() -> NIOSSL.NIOSSLServerHandler? {
-         // Define the PSK server provider
-            let pskServerProvider: NIOPSKServerIdentityProvider = { [weak self] context in
-                guard let self else {
-                    print("Error: Self is nil, returning empty PSK.")
-                    return PSKServerIdentityResponse(key: NIOSSLSecureBytes())
-                }
-
-                // Retrieve PSK credentials based on the client identity
-                let clientIdentity = context.clientIdentity
-                self.logger.log(
-                    level: .info, message: "Received client identity: \(clientIdentity)")
-
-                // Get the PSK credentials for the client
-             let pskCredentials = PSKCredentials(key: "random-key", hint: "random-hint")
-
-                // Log the retrieved PSK credentials
-                self.logger.log(
-                    level: .info,
-                    message: "Retrieved PSK credentials for client identity: \(clientIdentity)")
-                self.logger.log(level: .trace, message: "PSK Key configured (length: \(pskCredentials.key.count))")
-
-                // Create the PSK from the retrieved credentials
-                var psk = NIOSSLSecureBytes()
-
-                guard let pskKeyData = pskCredentials.key.data(using: .utf8) else {
-                    fatalError("Error: Unable to convert PSK key to Data.")
-                }
-
-                guard let hintData = pskCredentials.hint.data(using: .utf8) else {
-                    fatalError("Error: Unable to convert PSK hint to Data.")
-                }
-                let authenticationKey = SymmetricKey(data: pskKeyData)
-
-                let authenticationCode = HMAC<SHA256>.authenticationCode(
-                    for: hintData, using: authenticationKey)
-
-                let authenticationData = authenticationCode.withUnsafeBytes {
-                    Data($0)
-                }
-                psk.append(authenticationData)
-                self.logger.log(
-                    level: .info,
-                    message: "PSK successfully created for client identity: \(clientIdentity)")
-                return PSKServerIdentityResponse(key: psk)
-            }
-
-            // Create a TLS configuration for PSK
-            var tls = TLSConfiguration.makePreSharedKeyConfiguration()
-            tls.cipherSuiteValues = [.TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA]
-            tls.maximumTLSVersion = .tlsv13
-
-            // Log the PSK hint being used
-            tls.pskHint = "random-hint"
-            self.logger.log(level: .trace, message: "Using PSK hint (length: \("random-hint".count))")
-
-            // Set the PSK server provider
-            tls.pskServerProvider = pskServerProvider
-
-            // Create the SSL context
-            do {
-                let sslContext = try NIOSSLContext(configuration: tls)
-                self.logger.log(level: .debug, message: "Successfully created SSL context.")
-
-                // Return the SSL server handler
-                return NIOSSLServerHandler(context: sslContext)
-            } catch {
-                self.logger.log(level: .error, message: "Failed to create SSL context: \(error)")
-                return nil
-            }
-    }
+    public nonisolated func retrieveSSLHandler() -> NIOSSL.NIOSSLServerHandler? { nil }
 
 	struct PSKCredentials {
 		let key: String
