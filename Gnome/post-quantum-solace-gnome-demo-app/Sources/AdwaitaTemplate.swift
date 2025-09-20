@@ -11,7 +11,7 @@ struct PQSDemoApp: App {
 
     let app = AdwaitaApp(id: "com.needletails.PQSDemoApp")
     @State private var isRegistered: Bool = false
-    @MainActor private var receiver = MessageReceiverManager()
+    private var receiver = MessageReceiverManager()
     @State private var showingAddContact: Bool = false
     var session: SessionManager { SessionManager(receiver: receiver, useWebSockets: false) }
     let store = PQSSessionCache()
@@ -29,7 +29,6 @@ struct PQSDemoApp: App {
         }
         .defaultSize(width: 600, height: 450)
     }
-
 }
 
 extension PQSDemoApp {

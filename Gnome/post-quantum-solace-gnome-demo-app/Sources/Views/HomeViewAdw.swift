@@ -29,9 +29,6 @@ struct HomeViewAdw: View {
             .hscrollbarPolicy(.never)
             .vexpand()
             .hexpand()
-			.topToolbar {
-				// Sidebar has no extra controls; the window toolbar is global
-			}
         } content: {
             if let contact = contacts.first(where: { $0.id == selectedId }) {
                 ChatViewAdw(receiver: receiver, contact: contact, session: session)
@@ -51,13 +48,18 @@ struct HomeViewAdw: View {
         .hexpand()
         .breakpoint(minWidth: 600, matches: $wide)
         .onAppear {
-            Task { @MainActor in
-                contacts = receiver.contacts
+            contacts = receiver.contacts
+            Task {
+                logger.log(level: .info, message: "Contact Stream \(receiver.contactStream)")
+                for await contact in receiver.contactStream {
+                    logger.log(level: .info, message: "Streamed Contact \(contact)")
+                    contacts.append(contact)
+                }
             }
         }
-		.dialog(visible: $showingAddContact, title: "Add Contact") {
-			AddContactDialogAdw(session: session, receiver: receiver, visible: $showingAddContact, contacts: $contacts)
-		}
+        .dialog(visible: $showingAddContact, title: "Add Contact") {
+            AddContactDialogAdw(session: session, receiver: receiver, visible: $showingAddContact, contacts: $contacts)
+        }
 	}
 }
 

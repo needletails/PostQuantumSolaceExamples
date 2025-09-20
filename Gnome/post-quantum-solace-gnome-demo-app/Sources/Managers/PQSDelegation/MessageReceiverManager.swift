@@ -13,16 +13,24 @@ import Observation
  _MessageReceiverManager_ conforms to **EventReceiver**. This protocol is how **PostQuantumSolace** Notifies the consumer of Events performed by the session. Please read the **EventReceiver** documnetation in order to understand how to use each protocol method.
  **/
 
-@MainActor
-@Observable
 final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
     
     var contacts: [Contact] = []
     var messages: [EncryptedMessage] = []
     var lastMessage: EncryptedMessage?
-    // Callbacks to notify UI since Adwaita AnyView lacks onChange
-    var onNewMessage: ((EncryptedMessage) -> Void)?
-    var onContactsChanged: (([Contact]) -> Void)?
+
+    var contactContinuation: AsyncStream<Contact>.Continuation?
+    var messageContinuation: AsyncStream<EncryptedMessage>.Continuation?
+    var contactStream: AsyncStream<Contact> {
+        AsyncStream { continuation in
+            contactContinuation = continuation
+        }
+    }
+    var messageStream: AsyncStream<EncryptedMessage> {
+        AsyncStream { continuation in
+            messageContinuation = continuation
+        }
+    }
 
     // MARK: - EventReceiver Implementation
     
@@ -37,7 +45,7 @@ final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
         if !messages.contains(where: { $0.id == message.id }) {
             messages.append(message)
             lastMessage = message
-            onNewMessage?(message)
+            messageContinuation?.yield(message)
         }
     }
     
@@ -58,10 +66,11 @@ final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
     }
     
     public func createdContact(_ contact: Contact) async throws {
-        logger.log(level: .info, message: "Contact created: \(contact.id)")
+        logger.log(level: .info, message: "Contact created in receiver: \(contact.id)")
         // Handle contact creation - could update contact list UI
         contacts.append(contact)
-        onContactsChanged?(contacts)
+       contactContinuation?.yield(contact)
+       logger.log(level: .info, message: "Yieled Contact \(contactContinuation)")
     }
     
     public func synchronize(
@@ -93,7 +102,6 @@ final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
         logger.log(level: .info, message: "Contact removed: \(secretName)")
         // Handle contact removal - could update contact list UI
         contacts.removeAll { $0.secretName == secretName }
-        onContactsChanged?(contacts)
     }
     
     public func updateContact(_ contact: Contact) async throws {
@@ -101,7 +109,6 @@ final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
         // Handle contact update - could update contact list UI
         if let idx = contacts.firstIndex(where: { $0.id == contact.id }) {
             contacts[idx] = contact
-            onContactsChanged?(contacts)
         }
     }
     
