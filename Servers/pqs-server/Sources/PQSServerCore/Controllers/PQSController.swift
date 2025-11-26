@@ -9,7 +9,7 @@ import Hummingbird
 import HummingbirdCore
 import HummingbirdHTTP2
 import HummingbirdRouter
-import BSON
+import BinaryCodable
 @preconcurrency import Crypto
 import AsyncAlgorithms
 import ServiceLifecycle
@@ -97,7 +97,7 @@ struct PQSController {
         }
         
         router.post("/api/auth/one-time-keys/a/identities/:secretName/:deviceId") { request, context in
-            return try await fetchOneTimeKyberKeyIdentites(request: request, context: context, store: store)
+            return try await fetchOneTimeMLKEMKeyIdentites(request: request, context: context, store: store)
         }
         
         router.post("/api/auth/one-time-keys/b/identities/:secretName/:deviceId") { request, context in
@@ -128,11 +128,11 @@ struct PQSController {
         
         guard let user = await store.findUser(secretName: secretName) else { throw Errors.userNotFound }
         let keys = user.configuration.signedPublicOneTimeKeys.filter({ $0.deviceId.uuidString == deviceId }).compactMap({ $0.id })
-        let data = try BSONEncoder().encode(keys).makeData()
+        let data = try BinaryEncoder().encode(keys)
         return data
     }
     
-    func fetchOneTimeKyberKeyIdentites(request: Request, context: BasicRequestContext, store: PQSCache) async throws -> Data {
+    func fetchOneTimeMLKEMKeyIdentites(request: Request, context: BasicRequestContext, store: PQSCache) async throws -> Data {
         guard let secretName = context.parameters.get("secretName"),
               let deviceId = context.parameters.get("deviceId")
         else {
@@ -140,8 +140,8 @@ struct PQSController {
         }
         
         guard let user = await store.findUser(secretName: secretName) else { throw Errors.userNotFound }
-        let keys = user.configuration.signedPublicKyberOneTimeKeys.filter({ $0.deviceId.uuidString == deviceId }).compactMap({ $0.id })
-        let data = try BSONEncoder().encode(keys).makeData()
+        let keys = user.configuration.signedPublicMLKEMOneTimeKeys.filter({ $0.deviceId.uuidString == deviceId }).compactMap({ $0.id })
+        let data = try BinaryEncoder().encode(keys)
         return data
     }
     
@@ -154,7 +154,7 @@ struct PQSController {
         
         guard var user = await store.findUser(secretName: secretName) else { throw Errors.userNotFound }
         let curve = user.configuration.signedPublicOneTimeKeys.last(where: { $0.deviceId.uuidString == deviceId })
-        let kyber = user.configuration.signedPublicKyberOneTimeKeys.last(where: { $0.deviceId.uuidString == deviceId })
+        let mlKEM = user.configuration.signedPublicMLKEMOneTimeKeys.last(where: { $0.deviceId.uuidString == deviceId })
         
         guard let verifiedDevice = try user.configuration.getVerifiedDevices().first(where: { $0.deviceId.uuidString == deviceId }) else {
             throw Errors.verificationFailed
@@ -163,7 +163,7 @@ struct PQSController {
         
         
         user.configuration.signedPublicOneTimeKeys.removeAll(where: { $0.id == curve?.id })
-        user.configuration.signedPublicKyberOneTimeKeys.removeAll(where: { $0.id == kyber?.id })
+        user.configuration.signedPublicMLKEMOneTimeKeys.removeAll(where: { $0.id == mlKEM?.id })
         
         user.updateConfiguration(user.configuration)
         
@@ -172,17 +172,17 @@ struct PQSController {
         
         let keys = OneTimeKeys(
             curve: try curve?.verified(using: signingPublicKey),
-            kyber: try kyber?.kyberVerified(using: signingPublicKey))
+            mlKEM: try mlKEM?.mlKEMVerified(using: signingPublicKey))
         return keys
     }
 }
 
 extension UserConfiguration: ResponseGenerator {
     public func response(from request: HummingbirdCore.Request, context: some Hummingbird.RequestContext) throws -> HummingbirdCore.Response {
-            let byteBuffer = try BSONEncoder().encode(self).makeByteBuffer()
+            let data = try BinaryEncoder().encode(self)
             return Response(
                 status: .ok,
-                body: .init(byteBuffer: byteBuffer)
+                body: .init(byteBuffer: ByteBuffer(data: data))
             )
         }
 }
@@ -198,10 +198,10 @@ extension Data: @retroactive ResponseGenerator {
 
 extension OneTimeKeys: ResponseGenerator {
     public func response(from request: HummingbirdCore.Request, context: some Hummingbird.RequestContext) throws -> HummingbirdCore.Response {
-        let byteBuffer = try BSONEncoder().encode(self).makeByteBuffer()
+        let data = try BinaryEncoder().encode(self)
         return Response(
             status: .ok,
-            body: .init(byteBuffer: byteBuffer)
+            body: .init(byteBuffer:  ByteBuffer(data: data))
         )
     }
 }

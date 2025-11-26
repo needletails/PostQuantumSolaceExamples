@@ -71,7 +71,7 @@ struct ChatView: View {
         try await session.pqsSession.writeTextMessage(
             recipient: .nickname(contact.secretName),
             text: newMessage,
-            metadata: ["should-persist": true])
+            metadata: try BinaryEncoder().encode(["should-persist": true]))
         newMessage = ""
     }
 }

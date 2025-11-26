@@ -6,14 +6,14 @@
 //
 import Foundation
 import PQSSession
-import BSON
+import BinaryCodable
 import NeedleTailLogger
 
 /**
  _PQSSessionDelegateWrapper_ conforms to **PQSSessionDelegate**. This protocol is how **PostQuantumSolace** allows the consumer to hook into the sessions behavior and customize in according to the needs of the consumer. It is required to perform certain behaviors at certain times. For proper behaviour it should follow the example as close as possible. Many times metadata needs to be updated at very certain points before or after encryption, but before transport,This delegation offers certain methods that allows access to the message before or after or gives the consumers the eaxt timing of when certian logic should be performed. Please read the **PQSSessionDelegate** documnetation in order to understand how to use each protocol method.
  **/
 public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sendable {
-    
+
     // MARK: - Properties
     internal unowned let messageReciever: MessageReceiverManager
     internal let pqsSession: PQSSession
@@ -33,25 +33,24 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
     
     // MARK: - PQSSessionDelegate Implementation
     
-    public func synchronizeCommunication(recipient: SessionModels.MessageRecipient, sharedIdentifier: String) async throws {
+    public func synchronizeCommunication(recipient: SessionModels.MessageRecipient, sharedIdentifier: String, metadata: Data) async throws {
         logger.log(level: .info, message: "Synchronizing communication with recipient: \(recipient)")
         // Handle communication synchronization
         // This could involve establishing secure channels or exchanging metadata
         let transportInfo = TransportMetadata(
             messageFlag: .communicationSynchronization)
-        let transportData = try BSONEncoder().encodeData(transportInfo)
+        let transportData = try BinaryEncoder().encode(transportInfo)
         
         try await self.pqsSession.writeTextMessage(
             recipient: recipient,
             text: sharedIdentifier,
-            transportInfo: transportData,
-            metadata: [:])
+            transportInfo: transportData)
     }
     
     public func requestFriendshipStateChange(
         recipient: SessionModels.MessageRecipient,
         blockData: Data?,
-        metadata: BSON.Document,
+        metadata: Data,
         currentState: SessionModels.FriendshipMetadata.State
     ) async throws {
         logger.log(level: .info, message: "Requesting friendship state change for: \(recipient)")
@@ -59,14 +58,14 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
         // This could involve updating contact lists and communication permissions
         let transportInfo = TransportMetadata(
             messageFlag: .friendshipStateRequest)
-        let transportData = try BSONEncoder().encodeData(transportInfo)
+        let transportData = try BinaryEncoder().encode(transportInfo)
         try await self.pqsSession.writeTextMessage(
             recipient: recipient,
             transportInfo: transportData,
             metadata: metadata)
     }
     
-    public func deliveryStateChanged(recipient: MessageRecipient, metadata: BSON.Document) async throws {
+    public func deliveryStateChanged(recipient: MessageRecipient, metadata: Data) async throws {
         logger.log(level: .info, message: "Delivery state changed for: \(recipient)")
         // Handle message delivery state changes (sent, delivered, read)
         // This could involve updating UI indicators
@@ -78,12 +77,11 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
         // This could involve adding to contact list and establishing secure communication
         let transportInfo = TransportMetadata(
             messageFlag: .contactCreated)
-        let transportData = try BSONEncoder().encodeData(transportInfo)
+        let transportData = try BinaryEncoder().encode(transportInfo)
         
         try await self.pqsSession.writeTextMessage(
             recipient: recipient,
-            transportInfo: transportData,
-            metadata: [:])
+            transportInfo: transportData)
     }
     
     public func requestMetadata(recipient: MessageRecipient) async throws {
@@ -92,7 +90,7 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
         // This could involve fetching user information, keys, or other metadata
     }
     
-    public func editMessage(recipient: MessageRecipient, metadata: BSON.Document) async throws {
+    public func editMessage(recipient: MessageRecipient, metadata: Data) async throws {
         logger.log(level: .info, message: "Editing message for: \(recipient)")
         // Handle message editing
         // This could involve updating message content and notifying recipients
@@ -137,7 +135,7 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
         // For demo purposes, always continue synchronization
         guard let transportInfo else { return false }
         do {
-            let transportMetadata = try BSONDecoder().decodeData(TransportMetadata.self, from: transportInfo)
+            let transportMetadata = try BinaryDecoder().decode(TransportMetadata.self, from: transportInfo)
             switch transportMetadata.messageFlag {
             case .communicationSynchronization:
                 return true
@@ -156,24 +154,25 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
     ) async -> Bool {
         logger.log(level: .info, message: "Processing message from: \(senderSecretName)")
         do {
-            if let key = message.metadata["should-persist"], key as? Bool == true {
+            let decoded = try BinaryDecoder().decode([String: Bool].self, from: message.metadata)
+            if decoded.values.first == true {
                 return true // If we are persisting messages return true
             }
             guard let transportData = message.transportInfo else { return false }
-            let transportMetadata = try BSONDecoder().decode(TransportMetadata.self, from: Document(data: transportData))
+            let transportMetadata = try BinaryDecoder().decode(TransportMetadata.self, from: transportData)
             guard let cache = await pqsSession.cache else { return false }
             switch transportMetadata.messageFlag {
             case .friendshipStateRequest:
                 // Create/Update Contact and modify metadata
-                var decodedMetadata = try BSONDecoder().decode(FriendshipMetadata.self, from: message.metadata["friendshipMetadata"] as? Document ?? [:])
+                var friendshipMetadata = try BinaryDecoder().decode(FriendshipMetadata.self, from: message.metadata)
                 
-                decodedMetadata.swapUserPerspectives()
+                friendshipMetadata.swapUserPerspectives()
                 
                 //Update our state based on the state of the sender and it's metadata.
-                switch decodedMetadata.theirState {
+                switch friendshipMetadata.theirState {
                 case .pending:
                     
-                    decodedMetadata.resetToPendingState()
+                    friendshipMetadata.resetToPendingState()
                     
                     let symmetricKey = try await pqsSession.getDatabaseSymmetricKey()
                     guard let sessionIdentity = try await pqsSession.cache?.fetchSessionIdentities().async.first(where: { await $0.props(symmetricKey: symmetricKey)?.deviceId == senderDeviceId }) else {
@@ -183,29 +182,29 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
                     await pqsSession.removeIdentity(with: senderSecretName)
                     
                 case .requested:
-                    decodedMetadata.setRequestedState()
+                    friendshipMetadata.setRequestedState()
                 case .accepted:
-                    decodedMetadata.setAcceptedState()
+                    friendshipMetadata.setAcceptedState()
                 case .blocked, .blockedByOther:
-                    decodedMetadata.setBlockState(isBlocking: true)
+                    friendshipMetadata.setBlockState(isBlocking: true)
                 case .unblocked:
-                    decodedMetadata.setAcceptedState()
+                    friendshipMetadata.setAcceptedState()
                 default:
                     break
                 }
                 
-                let encodedMetadata = try BSONEncoder().encode(decodedMetadata)
                 guard let mySecretName = await pqsSession.sessionContext?.sessionUser.secretName else { return false }
                 
-                self.logger.log(level: .info, message: "Requested friendship state change for \(mySecretName) to state \(decodedMetadata.theirState).")
+                self.logger.log(level: .info, message: "Requested friendship state change for \(mySecretName) to state \(friendshipMetadata.theirState).")
                 
                 let isMe = senderSecretName == mySecretName
                 
                 //Create or update contact including new metadata
                 _ = try await pqsSession.createContact(
-                    secretName: isMe ? message.recipient.nicknameDescription : senderSecretName,
-                    metadata: ["friendshipMetadata": encodedMetadata],
+                    secretName: isMe ? message.recipient.recipientDescription : senderSecretName,
+                    friendshipMetadata: friendshipMetadata,
                     requestFriendship: false)
+                
             case .communicationSynchronization:
                 guard !message.text.isEmpty else { return false }
                 self.logger.log(level: .debug, message: "Received Communication Synchronization Message")
@@ -220,21 +219,49 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
                     //Need to flop sender/recipient
                     communicationModel = try await pqsSession.findCommunicationType(
                         cache: cache,
-                        communicationType: .nickname(isMe ? message.recipient.nicknameDescription : senderSecretName),
+                        communicationType: .nickname(isMe ? message.recipient.recipientDescription : senderSecretName),
                         symmetricKey: symmetricKey)
                 } catch {
-                    //Need to flop sender/recipient
-                    communicationModel = try await pqsSession.createCommunicationModel(
-                        recipients: [message.recipient.nicknameDescription, senderSecretName],
-                        communicationType: .nickname(isMe ? mySecretName : senderSecretName),
-                        metadata: message.metadata,
-                        symmetricKey: symmetricKey
-                    )
-                    guard let communicationModel = communicationModel else { return false }
-                    try await cache.createCommunication(communicationModel)
+                    guard !message.text.isEmpty else { return false }
+                    self.logger.log(level: .debug, message: "Received Communication Synchronization Message \(message.text)")
+                    let symmetricKey = try await pqsSession.getDatabaseSymmetricKey()
+                    
+                    var communicationModel: BaseCommunication?
+                    
+                    // Handle different communication types explicitly
+                    switch message.recipient {
+                    case .nickname(let recipientName):
+                        
+                        //This can happen on multidevice support when a sender is also sending a message to it's master/child device.
+                        guard let mySecretName = await pqsSession.sessionContext?.sessionUser.secretName else {
+                            logger.log(level: .info, message: "Received Communication Synchronization but could not get my secret name")
+                            return false
+                        }
+                        let isMe = senderSecretName == mySecretName
+                        
+                        // Private messages (1:1 between two users)
+                        do {
+                            //Need to flop sender/recipient for 1:1 messages
+                            communicationModel = try await pqsSession.findCommunicationType(
+                                cache: cache,
+                                communicationType: .nickname(isMe ? recipientName : senderSecretName),
+                                symmetricKey: symmetricKey)
+                        } catch {
+                            //Need to flop sender/recipient
+                            communicationModel = try await pqsSession.createCommunicationModel(
+                                recipients: [recipientName, senderSecretName],
+                                communicationType: .nickname(isMe ? mySecretName : senderSecretName),
+                                metadata: message.metadata,
+                                symmetricKey: symmetricKey)
+                            guard let communicationModel = communicationModel else { return false }
+                            try await cache.createCommunication(communicationModel)
+                        }
+                    default: break
+                    }
                 }
-                
-                guard let communicationModel = communicationModel else { return false }
+                guard let communicationModel else {
+                    return false
+                }
                 self.logger.log(level: .debug, message: "Found Communication Model For Synchronization: \(communicationModel)")
                 var props = await communicationModel.props(symmetricKey: symmetricKey)
                 props?.sharedId = UUID(uuidString: message.text)
@@ -245,15 +272,20 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
                 }
                 self.logger.log(level: .debug, message: "Updated Communication Model For Synchronization with Shared Id: \(String(describing: props?.sharedId))")
                 
-                _ = try await pqsSession.refreshIdentities(secretName: senderSecretName, forceRefresh: true)
+                // Only refresh identities for nickname messages, not channels
+                // (Channels don't have individual identity relationships)
+                // (Personal messages don't need identity refresh as they're self-contained)
+                if case .nickname = message.recipient {
+                    _ = try await pqsSession.refreshIdentities(secretName: senderSecretName, forceRefresh: true)
+                }
             case .contactCreated:
                 guard let mySecretName = await pqsSession.sessionContext?.sessionUser.secretName else { return false }
                 //This can happen on multidevice support when a sender is also sending a message to it's master/child device.
                 let isMe = senderSecretName == mySecretName
                 self.logger.log(level: .debug, message: "Received Contact Request Recipient Created Contact Message")
-                try await pqsSession.sendCommunicationSynchronization(contact: isMe ? message.recipient.nicknameDescription : senderSecretName)
+                try await pqsSession.sendCommunicationSynchronization(contact: isMe ? message.recipient.recipientDescription : senderSecretName)
             case .addContacts:
-                let contacts = try BSONDecoder().decode([SharedContactInfo].self, from: message.metadata)
+                let contacts = try BinaryDecoder().decode([SharedContactInfo].self, from: message.metadata)
                 try await pqsSession.addContacts(contacts)
             default:
                 guard let sessionContext = await pqsSession.sessionContext else { return false }
@@ -272,6 +304,5 @@ public final class PQSSessionDelegateWrapper: PQSSessionDelegate, @unchecked Sen
         } catch {
             return false
         }
-        
     }
 }

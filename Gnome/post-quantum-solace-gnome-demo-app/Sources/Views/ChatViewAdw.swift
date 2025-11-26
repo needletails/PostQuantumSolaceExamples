@@ -62,14 +62,13 @@ struct ChatViewAdw: View {
 		// Adwaita AnyView lacks .onChange; poll or react via receiver updates elsewhere
 	}
 
-	private func sendMessage() async throws {
-		try await session.pqsSession.writeTextMessage(
-			recipient: .nickname(contact.secretName),
-			text: newMessage,
-			metadata: ["should-persist": true]
-		)
-		newMessage = ""
-	}
+    private func sendMessage() async throws {
+        try await session.pqsSession.writeTextMessage(
+            recipient: .nickname(contact.secretName),
+            text: newMessage,
+            metadata: try BinaryEncoder().encode(["should-persist": true]))
+        newMessage = ""
+    }
 }
 
 private struct IdentifiedMessage: Identifiable {

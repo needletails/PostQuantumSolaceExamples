@@ -59,6 +59,14 @@ final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
         contacts.append(contact)
     }
     
+    func removedCommunication(_ type: SessionModels.MessageRecipient) async throws {
+        
+    }
+    
+    func createdChannel(_ model: SessionModels.BaseCommunication) async {
+        
+    }
+    
     public func synchronize(
         contact: Contact,
         requestFriendship: Bool

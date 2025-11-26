@@ -16,7 +16,7 @@ import Observation
 @MainActor
 @Observable
 final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
-    
+   
     var contacts: [Contact] = []
     var messages: [EncryptedMessage] = []
     var lastMessage: EncryptedMessage?
@@ -39,6 +39,14 @@ final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
             lastMessage = message
             onNewMessage?(message)
         }
+    }
+    
+    func removedCommunication(_ type: SessionModels.MessageRecipient) async throws {
+        
+    }
+    
+    func createdChannel(_ model: SessionModels.BaseCommunication) async {
+        
     }
     
     public func updatedMessage(_ message: EncryptedMessage) async {

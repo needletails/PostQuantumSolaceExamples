@@ -11,7 +11,8 @@ import HummingbirdWebSocket
 import NIOWebSocket
 import ServiceLifecycle
 import AsyncAlgorithms
-import BSON
+import BinaryCodable
+import Foundation
 
 //===----------------------------------------------------------------------===//
 //
@@ -126,7 +127,7 @@ actor ConnectionManager: Service {
                                 // We only handle text messages
                                 guard case .binary(let binary) = input else { continue }
                                 // We send the message to all the connected clients
-                                let decoded = try BSONDecoder().decode(MessagePacket.self, from: Document(buffer: binary))
+                                let decoded = try BinaryDecoder().decode(MessagePacket.self, from: Data(buffer: binary))
                                 serverLogger.info("Decoded message", metadata: ["decoded": "\(decoded)"])
                                 switch decoded.flag {
                                 case .privateMessage:
