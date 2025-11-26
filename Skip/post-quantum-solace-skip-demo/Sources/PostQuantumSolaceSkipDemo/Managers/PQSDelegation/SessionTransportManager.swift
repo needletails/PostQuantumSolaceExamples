@@ -10,7 +10,7 @@ import FoundationNetworking
 #endif
 import PQSSession
 import NeedleTailLogger
-import BSON
+import BinaryCodable
 import NeedleTailIRC
 
 /**
@@ -60,7 +60,7 @@ actor SessionTransportManager: SessionTransport {
             sender: senderDeviceId,
             message: message)
         
-        let encodedString = try BSONEncoder().encode(packet).makeData().base64EncodedString()
+        let encodedString = try BinaryEncoder().encode(packet).base64EncodedString()
 
         // For now, send to all recipients as the metadata doesn't contain recipient info
         // This will be improved when recipient information is properly passed through the metadata
@@ -71,7 +71,7 @@ actor SessionTransportManager: SessionTransport {
         logger.log(level: .info, message: "Message sent successfully")
     }
     
-    public func publishUserConfiguration(_ configuration: UserConfiguration, recipient identity: UUID) async throws {
+    public  func publishUserConfiguration(_ configuration: SessionModels.UserConfiguration, recipient secretName: String, recipient identity: UUID) async throws {
         logger.log(level: .info, message: "Publishing user configuration")
         
         guard let name = await PQSSession.shared.sessionContext?.sessionUser.secretName else {
@@ -89,7 +89,7 @@ actor SessionTransportManager: SessionTransport {
             sender: myDeviceIdentity
         )
         
-        let encodedString = try BSONEncoder().encode(packet).makeData().base64EncodedString()
+        let encodedString = try BinaryEncoder().encode(packet).base64EncodedString()
         
         guard let validatedName = NeedleTailNick(name: name, deviceId: myDeviceIdentity) else {
             throw SessionTransportError.invalidNickname
@@ -191,7 +191,7 @@ actor SessionTransportManager: SessionTransport {
             }
         }
         
-        let identities = try BSONDecoder().decodeData([UUID].self, from: data)
+        let identities = try BinaryDecoder().decode([UUID].self, from: data)
         logger.log(level: .info, message: "One-time key identities fetched: \(identities.count) keys")
         return identities
     }
@@ -202,7 +202,7 @@ actor SessionTransportManager: SessionTransport {
         logger.log(level: .info, message: "One-time keys updated successfully")
     }
     
-    func updateOneTimePQKemKeys(for secretName: String, deviceId: String, keys: [SessionModels.UserConfiguration.SignedPQKemOneTimeKey]) async throws {
+    func updateOneTimeMLKEMKeys(for secretName: String, deviceId: String, keys: [SessionModels.UserConfiguration.SignedMLKEMOneTimeKey]) async throws {
         logger.log(level: .info, message: "Updating PQKem one-time keys for: \(secretName)/\(deviceId)")
         // Implementation would go here for updating PQKem keys
         logger.log(level: .info, message: "PQKem one-time keys updated successfully")
@@ -226,7 +226,7 @@ actor SessionTransportManager: SessionTransport {
         logger.log(level: .info, message: "Rotated keys published successfully")
     }
     
-    func createUploadPacket(secretName: String, deviceId: UUID, recipient: SessionModels.MessageRecipient, metadata: BSON.Document) async throws {
+    func createUploadPacket(secretName: String, deviceId: UUID, recipient: SessionModels.MessageRecipient, metadata: Data) async throws {
         logger.log(level: .info, message: "Creating upload packet for: \(secretName)")
         // Implementation would go here for creating upload packets
         logger.log(level: .info, message: "Upload packet created successfully")

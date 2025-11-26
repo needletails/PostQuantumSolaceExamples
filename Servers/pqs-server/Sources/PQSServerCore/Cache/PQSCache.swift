@@ -8,7 +8,7 @@
 
 import Foundation
 @preconcurrency import Crypto
-import BSON
+import BinaryCodable
 
 public actor PQSCache {
     public static let shared = PQSCache()
@@ -46,32 +46,32 @@ public struct UserConfiguration: Codable, Sendable, Equatable {
         case signingPublicKey = "a"
         case signedDevices = "b"
         case signedPublicOneTimeKeys = "c"
-        case signedPublicKyberOneTimeKeys = "d"
+        case signedPublicMLKEMOneTimeKeys = "d"
     }
     
     public var signingPublicKey: Data
     public var signedDevices: [SignedDeviceConfiguration]
     public var signedPublicOneTimeKeys: [SignedPublicOneTimeKey]
-    public var signedPublicKyberOneTimeKeys: [SignedKyberOneTimeKey]
+    public var signedPublicMLKEMOneTimeKeys: [SignedMLKEMOneTimeKey]
     
     public init(
         signingPublicKey: Data,
         signedDevices: [SignedDeviceConfiguration],
         signedPublicOneTimeKeys: [SignedPublicOneTimeKey],
-        signedPublicKyberOneTimeKeys: [SignedKyberOneTimeKey]
+        signedPublicMLKEMOneTimeKeys: [SignedMLKEMOneTimeKey]
     ) {
         self.signingPublicKey = signingPublicKey
         self.signedDevices = signedDevices
         self.signedPublicOneTimeKeys = signedPublicOneTimeKeys
-        self.signedPublicKyberOneTimeKeys = signedPublicKyberOneTimeKeys
+        self.signedPublicMLKEMOneTimeKeys = signedPublicMLKEMOneTimeKeys
     }
     
     mutating func setSignedPublicOneTimeKeys(_ signedPublicOneTimeKeys: [SignedPublicOneTimeKey]) {
         self.signedPublicOneTimeKeys = signedPublicOneTimeKeys
     }
     
-    mutating func setSignedPublicOneTimeKyberKeys(_ signedPublicKyberOneTimeKeys: [SignedKyberOneTimeKey]) {
-        self.signedPublicKyberOneTimeKeys = signedPublicKyberOneTimeKeys
+    mutating func setSignedPublicOneTimeMLKEMKeys(_ signedPublicMLKEMOneTimeKeys: [SignedMLKEMOneTimeKey]) {
+        self.signedPublicMLKEMOneTimeKeys = signedPublicMLKEMOneTimeKeys
     }
     
     public func getVerifiedDevices() throws -> [UserDeviceConfiguration] {
@@ -79,7 +79,7 @@ public struct UserConfiguration: Codable, Sendable, Equatable {
         return try signedDevices.compactMap { try $0.verified(using: publicKey) }
     }
     
-    public func getVerifiedKeys(deviceId: UUID) async throws -> [Curve25519PublicKeyRepresentable] {
+    public func getVerifiedKeys(deviceId: UUID) async throws -> [CurvePublicKey] {
         guard let device = signedDevices.first(where: { $0.id == deviceId }),
               let verifiedDevice = try device.verified(using: try Curve25519.Signing.PublicKey(rawRepresentation: self.signingPublicKey)) else {
            fatalError()
@@ -92,14 +92,14 @@ public struct UserConfiguration: Codable, Sendable, Equatable {
         let filteredKeys = keysByDeviceId[deviceId] ?? []
         
         // Use async let to run verifications concurrently
-        let verifiedKeys: [Curve25519PublicKeyRepresentable] = try await withThrowingTaskGroup(of: Curve25519PublicKeyRepresentable?.self) { group in
+        let verifiedKeys: [CurvePublicKey] = try await withThrowingTaskGroup(of: CurvePublicKey?.self) { group in
             for key in filteredKeys {
                 group.addTask {
                     return try? key.verified(using: publicKey)
                 }
             }
             
-            var results: [Curve25519PublicKeyRepresentable] = []
+            var results: [CurvePublicKey] = []
             for try await result in group {
                 if let verifiedKey = result {
                     results.append(verifiedKey)
@@ -124,7 +124,7 @@ public struct UserConfiguration: Codable, Sendable, Equatable {
         }
         
         public init(device: UserDeviceConfiguration, signingKey: Curve25519.Signing.PrivateKey) throws {
-            let encoded = try BSONEncoder().encode(device).makeData()
+            let encoded = try BinaryEncoder().encode(device)
             self.id = device.deviceId
             self.data = encoded
             self.signature = try signingKey.signature(for: encoded)
@@ -132,7 +132,7 @@ public struct UserConfiguration: Codable, Sendable, Equatable {
         
         func verified(using publicKey: Curve25519.Signing.PublicKey) throws -> UserDeviceConfiguration? {
             guard publicKey.isValidSignature(signature, for: data) else { return nil }
-            return try BSONDecoder().decode(UserDeviceConfiguration.self, from: Document(data: data))
+            return try BinaryDecoder().decode(UserDeviceConfiguration.self, from: data)
         }
     }
     
@@ -150,24 +150,24 @@ public struct UserConfiguration: Codable, Sendable, Equatable {
         }
         
         public init(
-            key: Curve25519PublicKeyRepresentable,
+            key: CurvePublicKey,
             deviceId: UUID,
             signingKey: Curve25519.Signing.PrivateKey
         ) throws {
-            let encoded = try BSONEncoder().encode(key).makeData()
+            let encoded = try BinaryEncoder().encode(key)
             self.id = key.id
             self.deviceId = deviceId
             self.data = encoded
             self.signature = try signingKey.signature(for: encoded)
         }
         
-        public func verified(using publicKey: Curve25519.Signing.PublicKey) throws -> Curve25519PublicKeyRepresentable? {
+        public func verified(using publicKey: Curve25519.Signing.PublicKey) throws -> CurvePublicKey? {
             guard publicKey.isValidSignature(signature, for: data) else { return nil }
-            return try BSONDecoder().decode(Curve25519PublicKeyRepresentable.self, from: Document(data: data))
+            return try BinaryDecoder().decode(CurvePublicKey.self, from: data)
         }
     }
     
-    public struct SignedKyberOneTimeKey: Codable, Sendable {
+    public struct SignedMLKEMOneTimeKey: Codable, Sendable {
         public let id: UUID
         public let deviceId: UUID
         public let data: Data
@@ -181,20 +181,20 @@ public struct UserConfiguration: Codable, Sendable, Equatable {
         }
         
         public init(
-            key: Kyber1024PublicKeyRepresentable,
+            key: MLKEMPublicKey,
             deviceId: UUID,
             signingKey: Curve25519.Signing.PrivateKey
         ) throws {
-            let encoded = try BSONEncoder().encode(key).makeData()
+            let encoded = try BinaryEncoder().encode(key)
             self.id = key.id
             self.deviceId = deviceId
             self.data = encoded
             self.signature = try signingKey.signature(for: encoded)
         }
         
-        public func kyberVerified(using publicKey: Curve25519.Signing.PublicKey) throws -> Kyber1024PublicKeyRepresentable? {
+        public func mlKEMVerified(using publicKey: Curve25519.Signing.PublicKey) throws -> MLKEMPublicKey? {
             guard publicKey.isValidSignature(signature, for: data) else { return nil }
-            return try BSONDecoder().decode(Kyber1024PublicKeyRepresentable.self, from: Document(data: data))
+            return try BinaryDecoder().decode(MLKEMPublicKey.self, from: data)
         }
     }
     
@@ -213,7 +213,7 @@ public struct UserDeviceConfiguration: Codable, Sendable {
     /// Public key associated with the device.
     public var longTermPublicKey: Data
     /// Public key associated with the device.
-    public var finalKyber1024PublicKey: Kyber1024PublicKeyRepresentable
+    public var finalMLKEMPublicKey: MLKEMPublicKey
     /// An optional Device Name to identify What device this actualy is.
     public let deviceName: String?
     /// HMAC data for JWT Authentication
@@ -226,7 +226,7 @@ public struct UserDeviceConfiguration: Codable, Sendable {
         case deviceId = "a"
         case signingPublicKey = "b"
         case longTermPublicKey = "c"
-        case finalKyber1024PublicKey = "d"
+        case finalMLKEMPublicKey = "d"
         case deviceName = "e"
         case hmacData = "f"
         case isMasterDevice = "g"
@@ -243,7 +243,7 @@ public struct UserDeviceConfiguration: Codable, Sendable {
         deviceId: UUID,
         signingPublicKey: Data,
         longTermPublicKey: Data,
-        finalKyber1024PublicKey: Kyber1024PublicKeyRepresentable,
+        finalMLKEMPublicKey: MLKEMPublicKey,
         deviceName: String?,
         hmacData: Data,
         isMasterDevice: Bool
@@ -251,14 +251,14 @@ public struct UserDeviceConfiguration: Codable, Sendable {
         self.deviceId = deviceId
         self.signingPublicKey = signingPublicKey
         self.longTermPublicKey = longTermPublicKey
-        self.finalKyber1024PublicKey = finalKyber1024PublicKey
+        self.finalMLKEMPublicKey = finalMLKEMPublicKey
         self.deviceName = deviceName
         self.hmacData = hmacData
         self.isMasterDevice = isMasterDevice
     }
 }
 
-public struct Curve25519PublicKeyRepresentable: Codable, Sendable {
+public struct CurvePublicKey: Codable, Sendable {
     
     public let id: UUID
     public let rawRepresentation: Data
@@ -273,7 +273,7 @@ public struct Curve25519PublicKeyRepresentable: Codable, Sendable {
 
 }
 
-public struct Kyber1024PublicKeyRepresentable: Codable, Sendable, Equatable {
+public struct MLKEMPublicKey: Codable, Sendable, Equatable {
     /// A unique identifier for the key (e.g. device or session key).
     public let id: UUID
     
@@ -328,14 +328,14 @@ public struct User: Codable, Sendable, Hashable {
 
 
 public struct OneTimeKeys: Codable, Sendable {
-    public let curve: Curve25519PublicKeyRepresentable?
-    public let kyber: Kyber1024PublicKeyRepresentable?
+    public let curve: CurvePublicKey?
+    public let mlKEM: MLKEMPublicKey?
     
-    public init(curve: Curve25519PublicKeyRepresentable? = nil,
-                kyber: Kyber1024PublicKeyRepresentable? = nil
+    public init(curve: CurvePublicKey? = nil,
+                mlKEM: MLKEMPublicKey? = nil
     ) {
         self.curve = curve
-        self.kyber = kyber
+        self.mlKEM = mlKEM
     }
 }
 

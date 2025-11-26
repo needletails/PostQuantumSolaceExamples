@@ -7,14 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09296B6F2E7C00340000D871 /* ConnectionManagerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 09296B6E2E7C00340000D871 /* ConnectionManagerKit */; };
 		09296BB92E7C07EE0000D871 /* ConnectionManagerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */; };
 		09296C8A2E7C0EA10000D871 /* PQSIRCCore in Frameworks */ = {isa = PBXBuildFile; productRef = 09296C892E7C0EA10000D871 /* PQSIRCCore */; };
 		09296C8D2E7C0EC40000D871 /* PQSServerCore in Frameworks */ = {isa = PBXBuildFile; productRef = 09296C8C2E7C0EC40000D871 /* PQSServerCore */; };
-		09342F5F2E740AE1007243B3 /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F5E2E740AE1007243B3 /* PostQuantumSolace */; };
-		09342F6D2E740BA2007243B3 /* NeedleTailIRC in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F6C2E740BA2007243B3 /* NeedleTailIRC */; };
 		09342F7E2E7414D3007243B3 /* NeedleTailAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */; };
-		09878CBB2E7E304A00EAB76A /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 09878CBA2E7E304A00EAB76A /* PostQuantumSolace */; };
+		09380F992ED706B500386693 /* NeedleTailIRC in Frameworks */ = {isa = PBXBuildFile; productRef = 09380F982ED706B500386693 /* NeedleTailIRC */; };
+		093810AA2ED720D100386693 /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 093810A92ED720D100386693 /* PostQuantumSolace */; };
+		093810AF2ED722CC00386693 /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F5E2E740AE1007243B3 /* PostQuantumSolace */; };
+		093810B02ED722CC00386693 /* ConnectionManagerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 09296B6E2E7C00340000D871 /* ConnectionManagerKit */; };
+		093810B12ED722CC00386693 /* NeedleTailIRC in Frameworks */ = {isa = PBXBuildFile; productRef = 09380F632ED6FF9200386693 /* NeedleTailIRC */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -83,12 +84,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				093810B12ED722CC00386693 /* NeedleTailIRC in Frameworks */,
+				093810B02ED722CC00386693 /* ConnectionManagerKit in Frameworks */,
+				093810AF2ED722CC00386693 /* PostQuantumSolace in Frameworks */,
 				09296BB92E7C07EE0000D871 /* ConnectionManagerKit in Frameworks */,
+				09380F992ED706B500386693 /* NeedleTailIRC in Frameworks */,
 				09342F7E2E7414D3007243B3 /* NeedleTailAlgorithms in Frameworks */,
-				09296B6F2E7C00340000D871 /* ConnectionManagerKit in Frameworks */,
-				09342F6D2E740BA2007243B3 /* NeedleTailIRC in Frameworks */,
-				09342F5F2E740AE1007243B3 /* PostQuantumSolace in Frameworks */,
-				09878CBB2E7E304A00EAB76A /* PostQuantumSolace in Frameworks */,
+				093810AA2ED720D100386693 /* PostQuantumSolace in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,11 +192,12 @@
 			name = PostQuantumSolaceDemo;
 			packageProductDependencies = (
 				09342F5E2E740AE1007243B3 /* PostQuantumSolace */,
-				09342F6C2E740BA2007243B3 /* NeedleTailIRC */,
 				09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */,
 				096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */,
 				09296B6E2E7C00340000D871 /* ConnectionManagerKit */,
-				09878CBA2E7E304A00EAB76A /* PostQuantumSolace */,
+				09380F632ED6FF9200386693 /* NeedleTailIRC */,
+				09380F982ED706B500386693 /* NeedleTailIRC */,
+				093810A92ED720D100386693 /* PostQuantumSolace */,
 			);
 			productName = PostQuantumSolaceDemo;
 			productReference = 09342F272E7409EC007243B3 /* PostQuantumSolaceDemo.app */;
@@ -208,7 +211,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
-				LastUpgradeCheck = 1640;
+				LastUpgradeCheck = 2610;
 				TargetAttributes = {
 					09296BA62E7C07620000D871 = {
 						CreatedOnToolsVersion = 16.4;
@@ -231,12 +234,12 @@
 			mainGroup = 09342F1E2E7409EC007243B3;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				09342F6B2E740BA2007243B3 /* XCRemoteSwiftPackageReference "needletail-irc" */,
 				09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */,
 				09296B6D2E7C00340000D871 /* XCRemoteSwiftPackageReference "connection-manager-kit" */,
 				09296C882E7C0EA10000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-irc-server" */,
 				09296C8B2E7C0EC40000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-server" */,
-				09878CB92E7E304A00EAB76A /* XCRemoteSwiftPackageReference "post-quantum-solace" */,
+				09380F972ED706B500386693 /* XCRemoteSwiftPackageReference "needletail-irc" */,
+				093810A82ED720D100386693 /* XCRemoteSwiftPackageReference "post-quantum-solace" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 09342F282E7409EC007243B3 /* Products */;
@@ -289,6 +292,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -301,6 +305,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -313,6 +318,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -325,6 +331,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -367,6 +374,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -389,6 +397,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -428,6 +437,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -443,6 +453,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -455,8 +466,13 @@
 				CODE_SIGN_ENTITLEMENTS = PostQuantumSolaceDemo/PostQuantumSolaceDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -473,7 +489,6 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -493,8 +508,13 @@
 				CODE_SIGN_ENTITLEMENTS = PostQuantumSolaceDemo/PostQuantumSolaceDemo.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_INCOMING_NETWORK_CONNECTIONS = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -511,7 +531,6 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -580,16 +599,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/needletails/connection-manager-kit";
 			requirement = {
-				branch = websockets;
-				kind = branch;
-			};
-		};
-		09342F6B2E740BA2007243B3 /* XCRemoteSwiftPackageReference "needletail-irc" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/needletails/needletail-irc";
-			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
 			};
 		};
 		09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */ = {
@@ -600,12 +611,20 @@
 				minimumVersion = 2.0.4;
 			};
 		};
-		09878CB92E7E304A00EAB76A /* XCRemoteSwiftPackageReference "post-quantum-solace" */ = {
+		09380F972ED706B500386693 /* XCRemoteSwiftPackageReference "needletail-irc" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/needletails/post-quantum-solace";
+			repositoryURL = "https://github.com/needletails/needletail-irc.git";
 			requirement = {
-				branch = os/android;
+				branch = main;
 				kind = branch;
+			};
+		};
+		093810A82ED720D100386693 /* XCRemoteSwiftPackageReference "post-quantum-solace" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/needletails/post-quantum-solace.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -628,24 +647,28 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = PostQuantumSolace;
 		};
-		09342F6C2E740BA2007243B3 /* NeedleTailIRC */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 09342F6B2E740BA2007243B3 /* XCRemoteSwiftPackageReference "needletail-irc" */;
-			productName = NeedleTailIRC;
-		};
 		09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */;
 			productName = NeedleTailAlgorithms;
 		};
+		09380F632ED6FF9200386693 /* NeedleTailIRC */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NeedleTailIRC;
+		};
+		09380F982ED706B500386693 /* NeedleTailIRC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 09380F972ED706B500386693 /* XCRemoteSwiftPackageReference "needletail-irc" */;
+			productName = NeedleTailIRC;
+		};
+		093810A92ED720D100386693 /* PostQuantumSolace */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 093810A82ED720D100386693 /* XCRemoteSwiftPackageReference "post-quantum-solace" */;
+			productName = PostQuantumSolace;
+		};
 		096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ConnectionManagerKit;
-		};
-		09878CBA2E7E304A00EAB76A /* PostQuantumSolace */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 09878CB92E7E304A00EAB76A /* XCRemoteSwiftPackageReference "post-quantum-solace" */;
-			productName = PostQuantumSolace;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

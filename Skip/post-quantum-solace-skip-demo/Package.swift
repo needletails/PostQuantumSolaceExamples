@@ -14,8 +14,8 @@ let package = Package(
         .package(url: "https://source.skip.tools/skip-fuse-ui.git", from: "1.0.0"),
         .package(url: "https://github.com/needletails/needletail-algorithms.git", from: "2.0.4"),
         .package(url: "https://github.com/needletails/needletail-irc.git", branch: "main"),
-        .package(url: "https://github.com/needletails/post-quantum-solace.git", branch: "os/android"),
-        .package(url: "https://github.com/needletails/connection-manager-kit.git", branch: "websockets")
+        .package(url: "https://github.com/needletails/post-quantum-solace.git", from: "2.0.0"),
+        .package(url: "https://github.com/needletails/connection-manager-kit.git", from: "2.2.0")
     ],
     targets: [
         .target(name: "PostQuantumSolaceSkipDemo", dependencies: [

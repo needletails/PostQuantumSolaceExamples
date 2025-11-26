@@ -8,7 +8,7 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import BSON
+import BinaryCodable
 import PQSSession
 import NeedleTailLogger
 import ConnectionManagerKit
@@ -83,7 +83,7 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
             throw IRCConnectionError.sessionNotAvailable
         }
         
-        let origin = try BSONEncoder().encode(nickname).makeData().base64EncodedString()
+        let origin = try BinaryEncoder().encode(nickname).base64EncodedString()
         guard let writer = writer else {
             logger.log(level: .error, message: "Writer not available")
             throw IRCConnectionError.writerNotAvailable
@@ -110,7 +110,7 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
 
         do {
             // Send password
-            let value = try BSONEncoder().encode(ClientType.client).makeData().base64EncodedString()
+            let value = try BinaryEncoder().encode(ClientType.client).base64EncodedString()
             let passTag = IRCTag(key: "pass-tag", value: value)
             try await self.transportMessage(
                 command: .otherCommand(Constants.pass.rawValue, [""]),
@@ -189,7 +189,7 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
             return
         }
         
-        let packet = try BSONDecoder().decode(MessagePacket.self, from: Document(data: data))
+        let packet = try BinaryDecoder().decode(MessagePacket.self, from: data)
         let sender = try await getSender(origin)
         
         for recipient in recipients {
@@ -227,7 +227,7 @@ extension IRCConnection: ChannelContextDelegate, ConnectionDelegate, NeedleTailW
         guard let data = Data(base64Encoded: origin) else {
             throw IRCConnectionError.invalidOriginData
         }
-        return try BSONDecoder().decode(IRCUserIdentifier.self, from: Document(data: data))
+        return try BinaryDecoder().decode(IRCUserIdentifier.self, from: data)
     }
     
     // MARK: - ConnectionDelegate Methods

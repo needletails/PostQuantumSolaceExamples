@@ -10,7 +10,7 @@ import FoundationNetworking
 #endif
 import PQSSession
 import NeedleTailLogger
-import BSON
+import BinaryCodable
 import ConnectionManagerKit
 import NTKLoop
 
@@ -20,7 +20,7 @@ import NTKLoop
  **/
 
 actor WebSocketTransportManager: SessionTransport {
-    
+
     // MARK: - Properties
     let logger: NeedleTailLogger
     let socket: WebSocketClient
@@ -56,7 +56,7 @@ actor WebSocketTransportManager: SessionTransport {
             recipient: metadata.deviceId,
             message: message)
         
-        let encodedData = try BSONEncoder().encode(packet).makeData()
+        let encodedData = try BinaryEncoder().encode(packet)
 
         // For now, send to all recipients as the metadata doesn't contain recipient info
         // This will be improved when recipient information is properly passed through the metadata
@@ -65,7 +65,7 @@ actor WebSocketTransportManager: SessionTransport {
         logger.log(level: .info, message: "Message sent successfully")
     }
     
-    public func publishUserConfiguration(_ configuration: UserConfiguration, recipient identity: UUID) async throws {
+    public  func publishUserConfiguration(_ configuration: SessionModels.UserConfiguration, recipient secretName: String, recipient identity: UUID) async throws {
         logger.log(level: .info, message: "Publishing user configuration")
 
         
@@ -81,7 +81,7 @@ actor WebSocketTransportManager: SessionTransport {
             userConfiguration: configuration,
             sender: myDeviceIdentity)
         
-            let encodedData = try BSONEncoder().encode(packet).makeData()
+            let encodedData = try BinaryEncoder().encode(packet)
             try await socket.sendBinary(encodedData, to: "/api/auth/ws?secretName=\(mySecretName)")
             
             logger.log(level: .info, message: "User configuration published successfully")
@@ -176,7 +176,7 @@ actor WebSocketTransportManager: SessionTransport {
             }
         }
         
-        let identities = try BSONDecoder().decodeData([UUID].self, from: data)
+        let identities = try BinaryDecoder().decode([UUID].self, from: data)
         logger.log(level: .info, message: "One-time key identities fetched: \(identities.count) keys")
         return identities
     }
@@ -187,7 +187,7 @@ actor WebSocketTransportManager: SessionTransport {
         logger.log(level: .info, message: "One-time keys updated successfully")
     }
     
-    func updateOneTimePQKemKeys(for secretName: String, deviceId: String, keys: [SessionModels.UserConfiguration.SignedPQKemOneTimeKey]) async throws {
+    func updateOneTimeMLKEMKeys(for secretName: String, deviceId: String, keys: [SessionModels.UserConfiguration.SignedMLKEMOneTimeKey]) async throws {
         logger.log(level: .info, message: "Updating PQKem one-time keys for: \(secretName)/\(deviceId)")
         // Implementation would go here for updating PQKem keys
         logger.log(level: .info, message: "PQKem one-time keys updated successfully")
@@ -211,7 +211,7 @@ actor WebSocketTransportManager: SessionTransport {
         logger.log(level: .info, message: "Rotated keys published successfully")
     }
     
-    func createUploadPacket(secretName: String, deviceId: UUID, recipient: SessionModels.MessageRecipient, metadata: BSON.Document) async throws {
+    func createUploadPacket(secretName: String, deviceId: UUID, recipient: SessionModels.MessageRecipient, metadata: Data) async throws {
         logger.log(level: .info, message: "Creating upload packet for: \(secretName)")
         // Implementation would go here for creating upload packets
         logger.log(level: .info, message: "Upload packet created successfully")

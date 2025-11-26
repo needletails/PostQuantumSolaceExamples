@@ -9,7 +9,7 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import BSON
+import BinaryCodable
 
 enum RequestType: String {
     case post = "POST"
@@ -53,11 +53,11 @@ extension URLSession {
             method: method,
             headers: headers,
             body: body,
-            codableType: .bson)
+            codableType: .binary)
     }
     
     enum CodableType {
-        case bson, json
+        case binary, json
     }
     
     func request<T: Codable>(
@@ -65,7 +65,7 @@ extension URLSession {
         method: RequestType,
         headers: [String: String]? = nil,
         body: Data? = nil,
-        codableType: CodableType = .bson
+        codableType: CodableType = .binary
     ) async throws -> Response<T> {
         var request = URLRequest(url: url)
         request.httpMethod = method.rawValue
@@ -73,7 +73,7 @@ extension URLSession {
         if codableType == .json {
             request.addValue("application/json", forHTTPHeaderField: "Content-Type")
         } else {
-            request.addValue("application/bson", forHTTPHeaderField: "Content-Type")
+            request.addValue("application/binary", forHTTPHeaderField: "Content-Type")
         }
         // Set headers if provided
         if let headers = headers {
@@ -105,7 +105,7 @@ extension URLSession {
         if codableType == .json {
             decodedResponse = try JSONDecoder().decode(T.self, from: data)
         } else {
-            decodedResponse = try BSONDecoder().decode(T.self, from: Document(data: data))
+            decodedResponse = try BinaryDecoder().decode(T.self, from: data)
         }
         return Response(data: decodedResponse, urlResponse: response)
     }

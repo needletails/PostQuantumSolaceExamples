@@ -16,7 +16,7 @@ import SkipFuse
 @MainActor
 @Observable
 final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
-    
+
     var contacts: [Contact] = []
     var messages: [EncryptedMessage] = []
     var lastMessage: EncryptedMessage?
@@ -57,6 +57,14 @@ final class MessageReceiverManager: EventReceiver, @unchecked Sendable {
         logger.log(level: .info, message: "Contact created: \(contact.id)")
         // Handle contact creation - could update contact list UI
         contacts.append(contact)
+    }
+    
+    func removedCommunication(_ type: SessionModels.MessageRecipient) async throws {
+    
+    }
+    
+    func createdChannel(_ model: SessionModels.BaseCommunication) async {
+    
     }
     
     public func synchronize(

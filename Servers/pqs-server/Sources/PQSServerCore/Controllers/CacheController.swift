@@ -7,7 +7,7 @@
 import Hummingbird
 import HummingbirdHTTP2
 import HummingbirdRouter
-import BSON
+import BinaryCodable
 
 struct CacheController {
     func addRoutes(to router: Router<BasicRequestContext>, store: PQSCache) {
@@ -54,10 +54,10 @@ struct CacheController {
 
 extension User: ResponseGenerator {
     public func response(from request: HummingbirdCore.Request, context: some Hummingbird.RequestContext) throws -> HummingbirdCore.Response {
-        let byteBuffer = try BSONEncoder().encode(self).makeByteBuffer()
+        let data = try BinaryEncoder().encode(self)
         return Response(
             status: .ok,
-            body: .init(byteBuffer: byteBuffer)
+            body: .init(byteBuffer: ByteBuffer(data: data))
         )
     }
 }

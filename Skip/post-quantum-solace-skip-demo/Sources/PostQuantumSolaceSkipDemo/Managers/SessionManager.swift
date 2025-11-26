@@ -14,7 +14,7 @@ import NeedleTailLogger
 import NeedleTailIRC
 import NeedleTailAsyncSequence
 import NTKLoop
-import BSON
+import BinaryCodable
 
 let logger = NeedleTailLogger("PQSDemoLogger")
 @MainActor let socket = WebSocketClient.shared

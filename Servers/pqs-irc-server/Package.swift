@@ -13,8 +13,9 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.28.0"),
         .package(url: "https://github.com/needletails/needletail-irc.git", branch: "main"),
-        .package(url: "https://github.com/needletails/connection-manager-kit.git", branch: "websockets"),
-        .package(url: "https://github.com/apple/swift-crypto.git", from: "3.15.0")
+        .package(url: "https://github.com/needletails/connection-manager-kit.git", from: "2.2.0"),
+        .package(url: "https://github.com/needletails/swift-crypto.git", from: "1.0.1"),
+        .package(url: "https://github.com/needletails/binary-codable.git", from: "1.0.3")
     ],
     targets: [
         .target(
@@ -23,7 +24,8 @@ let package = Package(
                 .product(name: "ConnectionManagerKit", package: "connection-manager-kit"),
                 .product(name: "NeedleTailIRC", package: "needletail-irc"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "Crypto", package: "swift-crypto")
+                .product(name: "Crypto", package: "swift-crypto"),
+                .product(name: "BinaryCodable", package: "binary-codable")
             ],
             path: "Sources/PQSIRCCore"
         ),

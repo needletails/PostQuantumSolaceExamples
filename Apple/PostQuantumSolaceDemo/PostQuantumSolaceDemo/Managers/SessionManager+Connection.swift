@@ -10,7 +10,7 @@ import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
-import BSON
+import BinaryCodable
 import NIO
 @preconcurrency import Crypto
 
@@ -83,7 +83,7 @@ extension SessionManager: ConnectionManagerDelegate {
                         switch frame {
                         case .binary(let data):
                             guard let data else { return }
-                            let decoded = try BSONDecoder().decode(MessagePacket.self, from: Document(data: data))
+                            let decoded = try BinaryDecoder().decode(MessagePacket.self, from: data)
                             if let message = decoded.message, let name = decoded.senderSecretName, let deviceId = decoded.sender {
                                 try await pqsSession.receiveMessage(
                                     message: message,
