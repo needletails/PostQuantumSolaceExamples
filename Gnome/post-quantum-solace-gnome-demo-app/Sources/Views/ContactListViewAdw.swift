@@ -12,7 +12,9 @@ struct ContactListViewAdw: View {
 	@Binding var showingAddContact: Bool
 	@Binding var isRegistered: Bool
 	let receiver: MessageReceiverManager
-    @State private var selectedContact: Contact?
+    @State private var selectedContact: Contact?	
+	@State private var listenerInstalled = false
+    
 
     var view: Body {
         VStack(spacing: 12) {
@@ -37,12 +39,20 @@ struct ContactListViewAdw: View {
         }
         // Update source of truth from receiver elsewhere or via periodic refresh
         .onAppear {
-            Task { @MainActor in
                 contacts = receiver.contacts
+                if !listenerInstalled {
+                    listenerInstalled = true
+                    	Task {
+                    	logger.log(level: .info, message: "Contact Stream \(receiver.contactStream)")
+                    		for await contact in receiver.contactStream {
+                    		logger.log(level: .info, message: "Streamed Contact \(contact)")
+                        	contacts.append(contact)
+                    	}
+                    }
+                }
             }
         }
-	}
-}
+    }
 
 private struct IdentifiedContact: Identifiable {
 	let contact: Contact

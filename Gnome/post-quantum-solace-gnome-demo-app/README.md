@@ -8,6 +8,7 @@ _PQS Demo App_ is a template application for the [Adwaita for Swift package](htt
 ## Table of Contents
 
 - [Installation](#Installation)
+- [Configuration](#Configuration)
 - [Usage](#Usage)
 - [Thanks](#Thanks)
 
@@ -22,6 +23,77 @@ For designing an app icon, [App Icon Preview](https://flathub.org/apps/org.gnome
 > The PQS Demo App runs in a [Flatpak](https://flatpak.org/).
 > The GNOME Builder will automatically download dependencies from [Flathub](https://flathub.org).
 > You can also use [Visual Studio Code](https://code.visualstudio.com/) with a Docker [dev container](https://code.visualstudio.com/docs/devcontainers/containers) hosting the Swift toolchain and Adwaita libraries.
+
+## Configuration
+
+Before testing the application, you **MUST** update the following configuration settings to match your testing environment:
+
+### Required Configuration Changes
+
+#### 1. Server Configuration (`Sources/Configuration/AppConfiguration.swift`)
+Update the server endpoints to point to your testing servers:
+
+```swift
+struct Server {
+    static let host = "{your-host-name}.local"  // ← Change to your server hostname/IP
+    static let port: Int = 6667                 // ← Update if using different port
+    static let enableTLS = false                // ← Set to true if using TLS
+    // ... other settings
+}
+
+struct API {
+    static let baseURL = "http://{your-host-name}.local:8080"  // ← Change to your API server
+    // ... other settings
+}
+```
+
+#### 2. Bundle Identifiers
+Replace `com.needletails.PQSDemoApp` with your own bundle identifier throughout the project:
+
+**Files to update:**
+- `com.needletails.PQSDemoApp.json` (Flatpak manifest)
+- `data/com.needletails.PQSDemoApp.metainfo.xml` (Application metadata)
+- `data/com.needletails.PQSDemoApp.desktop` (Desktop entry)
+- Icon files in `data/icons/` directory (rename files and update references)
+
+**Example:** Replace `com.needletails.PQSDemoApp` with `com.yourcompany.PQSDemoApp`
+
+#### 3. Application Metadata
+Update application information in these files:
+
+**`data/com.needletails.PQSDemoApp.metainfo.xml`:**
+- `<id>` - Must match your bundle identifier
+- `<name>` - Your application name
+- `<summary>` - Brief description
+- `<description>` - Detailed description
+
+**`data/com.needletails.PQSDemoApp.desktop`:**
+- `Name=` - Display name for the application
+- `Comment=` - Brief description
+- `Icon=` - Must match your bundle identifier
+
+#### 4. Development Team Settings
+If you plan to distribute the application:
+- Update developer information in metadata files
+- Configure proper signing certificates for Flatpak distribution
+- Update license information if needed
+
+### Configuration Checklist
+
+Before building and running the application, ensure you have:
+
+- [ ] Updated server hostnames/IPs in `AppConfiguration.swift`
+- [ ] Replaced all instances of `com.needletails.PQSDemoApp` with your bundle identifier
+- [ ] Renamed all icon files to match your bundle identifier
+- [ ] Updated application name and description in metadata files
+- [ ] Configured correct server ports and TLS settings
+- [ ] Set up your testing server environment
+
+> [!IMPORTANT]
+> **Critical:** The application will not connect to servers or function properly without updating the server configuration. The placeholder values `{your-host-name}.local` must be replaced with actual server addresses.
+
+> [!WARNING]
+> **Bundle Identifier Conflicts:** Using the default `com.needletails.PQSDemoApp` identifier may cause conflicts if multiple testers are using the same system. Always use a unique identifier for your testing environment.
 
 ## Usage
 

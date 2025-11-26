@@ -26,10 +26,6 @@ struct ChatViewAdw: View {
 				.padding(8)
 			}
 			.vexpand()
-			.hexpand()
-			
-			// Separator
-			Separator()
 
 			// Composer
 			HStack(spacing: 8) {
@@ -46,20 +42,12 @@ struct ChatViewAdw: View {
 		}
 		.padding(12)
 		.onAppear {
-            Task { @MainActor in 
-                messages = receiver.messages
-                if !listenerInstalled {
-                    listenerInstalled = true
-                    receiver.onNewMessage = { msg in
-                        Task { @MainActor in 
-                            messages.append(msg)
-                        }
-                    }
-                }
-            }
+				 Task {
+				 	for await message in receiver.messageStream {
+				 			messages.append(message)
+				 		}
+				 }
 		}
-        
-		// Adwaita AnyView lacks .onChange; poll or react via receiver updates elsewhere
 	}
 
     private func sendMessage() async throws {
