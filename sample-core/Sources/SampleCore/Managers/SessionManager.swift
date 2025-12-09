@@ -93,17 +93,17 @@ public actor SessionManager {
         do {
             // Start PQSSession
             pqsSession = try await pqsSession.startSession(appPassword: AppConfiguration.Session.defaultAppPassword)
-            
+            logger.log(level: .info, message: "Did Start Session")
             guard let sessionContext = await pqsSession.sessionContext else {
                 throw PQSSession.SessionErrors.sessionNotInitialized
             }
             
                 // Create network connection
                 try await createNetworkConnection()
-                
+                logger.log(level: .info, message: "Created Connection")
                 // Wait for connection to establish
                 try await Task.sleep(until: .now + .seconds(AppConfiguration.Server.initialDelay))
-
+logger.log(level: .info, message: "Will Verify Device")
             // Verify device
             try await verifyDeviceIfNeeded(sessionContext: sessionContext)
             

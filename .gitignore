@@ -57,6 +57,7 @@ fastlane/test_output/
 /.flatpak/
 /flatpak-builder/
 /flatpak/
+Gnome/post-quantum-solace-gnome-demo-app/.flatpak-builder
 
 # Flatpak manifest and build state
 manifest.json

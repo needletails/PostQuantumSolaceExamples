@@ -9,7 +9,7 @@ struct PQSDemoApp: App {
 
     let app = AdwaitaApp(id: "com.needletails.PQSDemoApp")
     @State private var isRegistered: Bool = false
-    @MainActor private var receiver = MessageReceiverManager()
+    private var receiver = MessageReceiverManager()
     @State private var showingAddContact: Bool = false
     /// Single shared SessionManager instance for the whole app.
     /// This avoids recreating the actor (and losing its IRC connection)
@@ -34,7 +34,6 @@ struct PQSDemoApp: App {
         }
         .defaultSize(width: 600, height: 450)
     }
-
 }
 
 extension PQSDemoApp {
