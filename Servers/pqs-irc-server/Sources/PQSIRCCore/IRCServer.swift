@@ -32,20 +32,34 @@ public actor IRCServer {
     }
 
     public func listen(serverGroup: MultiThreadedEventLoopGroup) async {
-          let config = try! await listener.resolveAddress(
-            .init(group: serverGroup, host: "0.0.0.0", port: 6667))
-
-
-        let sessionManager = SessionManager(origin: config.origin!, logger: logger)
-        self.origin = config.origin
-        self.sessionManager = sessionManager
-
-        try! await listener.listen(
-            address: config.address!,
-            configuration: config,
-            delegate: self,
-            listenerDelegate: self)
-
+        do {
+            let config = try await listener.resolveAddress(
+                .init(group: serverGroup, host: "0.0.0.0", port: 6667)
+            )
+            
+            guard let origin = config.origin else {
+                logger.log(level: .error, message: "Failed to start IRC server: missing origin in resolved configuration")
+                return
+            }
+            
+            guard let address = config.address else {
+                logger.log(level: .error, message: "Failed to start IRC server: missing address in resolved configuration")
+                return
+            }
+            
+            let sessionManager = SessionManager(origin: origin, logger: logger)
+            self.origin = origin
+            self.sessionManager = sessionManager
+            
+            try await listener.listen(
+                address: address,
+                configuration: config,
+                delegate: self,
+                listenerDelegate: self
+            )
+        } catch {
+            logger.log(level: .error, message: "Failed to start IRC server listener: \(String(describing: error))")
+        }
     }
 }
 

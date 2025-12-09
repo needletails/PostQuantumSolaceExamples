@@ -1,5 +1,5 @@
 import Adwaita
-import PQSSession
+import SampleCore
 
 struct AddContactDialogAdw: View {
 

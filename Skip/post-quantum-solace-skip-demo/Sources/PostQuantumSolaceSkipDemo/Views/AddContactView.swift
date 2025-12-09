@@ -5,7 +5,7 @@
 //  Created by Cole M on 9/12/25.
 //
 import SwiftUI
-import PQSSession
+import SampleCore
 
 struct AddContactView: View {
     
@@ -17,13 +17,17 @@ struct AddContactView: View {
     }
     
     @State var contactName = ""
+    @State var isCreating: Bool = false
+    @State var showError: Bool = false
+    @State var errorMessage: String = ""
     @Binding var contacts: [Contact]
     @Environment(\.dismiss) var dismiss
     @FocusState var focusedField: Field?
+    private let logger = NeedleTailLogger("AddContactView")
     
     enum Field { case contact, secret }
     
-    var canAdd: Bool { !contactName.isEmpty }
+    var canAdd: Bool { !contactName.isEmpty && !isCreating }
     
     var body: some View {
         Group {
@@ -35,36 +39,71 @@ struct AddContactView: View {
 #endif
         }
         .onAppear { focusedField = .contact }
+        .alert("Error", isPresented: $showError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(errorMessage)
+        }
     }
     
     // MARK: - iOS
     private var iOSContent: some View {
+#if os(iOS) || os(tvOS)
         NavigationStack {
             formContent
                 .navigationTitle("Add Contact")
-#if os(iOS)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button("Cancel") { dismiss() }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Add") { addAndDismiss() }
-                            .disabled(!canAdd)
+                        if isCreating {
+                            ProgressView()
+                        } else {
+                            Button("Add") { addAndDismiss() }
+                                .disabled(!canAdd)
+                        }
                     }
                 }
-#else
+        }
+#elseif os(macOS)
+        NavigationView {
+            formContent
+                .navigationTitle("Add Contact")
                 .toolbar {
                     ToolbarItem(placement: .automatic) {
                         Button("Cancel") { dismiss() }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Add") { addAndDismiss() }
-                            .disabled(!canAdd)
+                        if isCreating {
+                            ProgressView()
+                        } else {
+                            Button("Add") { addAndDismiss() }
+                                .disabled(!canAdd)
+                        }
                     }
                 }
-#endif
         }
+#else
+        NavigationStack {
+            formContent
+                .navigationTitle("Add Contact")
+                .toolbar {
+                    ToolbarItem(placement: .automatic) {
+                        Button("Cancel") { dismiss() }
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        if isCreating {
+                            ProgressView()
+                        } else {
+                            Button("Add") { addAndDismiss() }
+                                .disabled(!canAdd)
+                        }
+                    }
+                }
+        }
+#endif
     }
     
     // MARK: - macOS
@@ -79,14 +118,20 @@ struct AddContactView: View {
             
             HStack {
                 Spacer()
-                Button("Cancel") {
-                    dismiss()
+                Button("Cancel") { dismiss() }
+#if os(macOS)
+                    .keyboardShortcut(.escape, modifiers: [])
+#endif
+                if isCreating {
+                    ProgressView()
+                } else {
+                    Button("Add") { addAndDismiss() }
+#if os(macOS)
+                        .keyboardShortcut(.return, modifiers: [])
+#endif
+                        .disabled(!canAdd)
+                        .buttonStyle(.borderedProminent)
                 }
-                Button("Add") {
-                    addAndDismiss()
-                }
-                    .disabled(!canAdd)
-                    .buttonStyle(.borderedProminent)
             }
             .padding(.top, 8)
         }
@@ -114,17 +159,54 @@ struct AddContactView: View {
 #endif
             }
             Section {
-                Button("Add Contact") { addAndDismiss() }
-                    .disabled(!canAdd)
+                if isCreating {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                } else {
+                    Button("Add Contact") { addAndDismiss() }
+                        .disabled(!canAdd)
+                }
             }
         }
+#if os(iOS) || os(tvOS)
+        .formStyle(.grouped)
+#endif
 #endif
     }
     
     private func addAndDismiss() {
         Task {
-            try? await session.createContact(secretName: contactName.lowercased())
-            dismiss()
+            await MainActor.run {
+                isCreating = true
+            }
+            
+            do {
+                let secretName = contactName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                guard !secretName.isEmpty else {
+                    await MainActor.run {
+                        isCreating = false
+                    }
+                    return
+                }
+                
+                try await session.createContact(secretName: secretName)
+                
+                await MainActor.run {
+                    isCreating = false
+                    contactName = ""
+                    dismiss()
+                }
+            } catch {
+                logger.log(level: .error, message: "Failed to create contact: \(error)")
+                await MainActor.run {
+                    isCreating = false
+                    errorMessage = "Failed to create contact: \(error.localizedDescription)"
+                    showError = true
+                }
+            }
         }
     }
 }

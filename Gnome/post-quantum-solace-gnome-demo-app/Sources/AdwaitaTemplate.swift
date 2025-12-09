@@ -2,9 +2,7 @@
 // https://docs.swift.org/swift-book
 
 import Adwaita
-import PQSSession
-import ConnectionManagerKit
-import NeedleTailIRC
+import SampleCore
 
 @main
 struct PQSDemoApp: App {
@@ -13,9 +11,16 @@ struct PQSDemoApp: App {
     @State private var isRegistered: Bool = false
     private var receiver = MessageReceiverManager()
     @State private var showingAddContact: Bool = false
-    var session: SessionManager { SessionManager(receiver: receiver, useWebSockets: false) }
+    /// Single shared SessionManager instance for the whole app.
+    /// This avoids recreating the actor (and losing its IRC connection)
+    /// every time the view hierarchy is rebuilt.
+    let session: SessionManager
     let store = PQSSessionCache()
 
+    init() {
+        self.session = SessionManager(receiver: receiver, useWebSockets: false)
+    }
+    
     var scene: Scene {
         Window(id: "main") { window in
             RootContent(
@@ -33,7 +38,8 @@ struct PQSDemoApp: App {
 
 extension PQSDemoApp {
 
-	struct RootContent: View {
+    @MainActor
+	struct RootContent: @preconcurrency View {
 		var app: AdwaitaApp
 		var window: AdwaitaWindow
 		@Binding var isRegistered: Bool
@@ -41,6 +47,7 @@ extension PQSDemoApp {
 		var session: SessionManager
 		var store: PQSSessionCache
         @State private var showingAddContact: Bool = false
+        @State private var showingCreateChannel: Bool = false
 
 		var view: Body {
 			VStack {
@@ -51,13 +58,20 @@ extension PQSDemoApp {
 					window: window,
 					isRegistered: $isRegistered,
 					showingAddContact: $showingAddContact,
+                    showingCreateChannel: $showingCreateChannel,
 					receiver: receiver,
 					session: session
 				)
 					.visible(isRegistered)
 			}
 			.topToolbar {
-				ToolbarView(app: app, window: window, isRegistered: $isRegistered, showingAddContact: $showingAddContact).view
+				ToolbarView(
+                    app: app,
+                    window: window,
+                    isRegistered: $isRegistered,
+                    showingAddContact: $showingAddContact,
+                    showingCreateChannel: $showingCreateChannel
+                ).view
 			}
 		}
 	}

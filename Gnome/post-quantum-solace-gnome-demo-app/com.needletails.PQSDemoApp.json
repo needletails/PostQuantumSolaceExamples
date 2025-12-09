@@ -44,10 +44,10 @@
         "swift build -c debug --static-swift-stdlib",
         "strip .build/debug/PQSDemoApp",
         "install -Dm755 .build/debug/PQSDemoApp /app/bin/PQSDemoApp",
-        "install -Dm644 data/com.needletails.PQSDemoApp.metainfo.xml $DESTDIR/app/share/metainfo/com.needletails.PQSDemoApp.metainfo.xml",
-        "install -Dm644 data/com.needletails.PQSDemoApp.desktop $DESTDIR/app/share/applications/com.needletails.PQSDemoApp.desktop",
-        "install -Dm644 data/icons/com.needletails.PQSDemoApp.svg $DESTDIR/app/share/icons/hicolor/scalable/apps/com.needletails.PQSDemoApp.svg",
-        "install -Dm644 data/icons/com.needletails.PQSDemoApp-symbolic.svg $DESTDIR/app/share/icons/hicolor/symbolic/apps/com.needletails.PQSDemoApp-symbolic.svg"
+        "install -Dm644 data/com.needletails.PQSDemoApp.metainfo.xml /app/share/metainfo/com.needletails.PQSDemoApp.metainfo.xml",
+        "install -Dm644 data/com.needletails.PQSDemoApp.desktop /app/share/applications/com.needletails.PQSDemoApp.desktop",
+        "install -Dm644 data/icons/com.needletails.PQSDemoApp.svg /app/share/icons/hicolor/scalable/apps/com.needletails.PQSDemoApp.svg",
+        "install -Dm644 data/icons/com.needletails.PQSDemoApp-symbolic.svg /app/share/icons/hicolor/symbolic/apps/com.needletails.PQSDemoApp-symbolic.svg"
       ]
     }
   ]

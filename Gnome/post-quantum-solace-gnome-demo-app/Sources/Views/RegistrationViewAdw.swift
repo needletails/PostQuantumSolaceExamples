@@ -1,5 +1,5 @@
 import Adwaita
-import PQSSession
+import SampleCore
 
 struct RegistrationViewAdw: View {
 
@@ -58,7 +58,7 @@ struct RegistrationViewAdw: View {
 				isRegistering = false
 				isRegistered = true
 		} catch {
-			logger.log(level: .error, message: "There was an error registering: \(error)")
+			print("There was an error registering: \(error)")
 			isRegistering = false
 		}
 	}

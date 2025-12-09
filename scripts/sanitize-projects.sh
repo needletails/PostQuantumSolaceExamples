@@ -35,6 +35,62 @@ file_changed() {
   [[ "$before_hash" != "$after_hash" ]]
 }
 
+sanitize_legacy_core_files() {
+  # Remove old per-app copies of core types that have been
+  # centralized into the shared `sample-core` package.
+  local legacy_paths=(
+    # Apple demo (old core copies under PostQuantumSolaceDemo)
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Configuration/AppConfiguration.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Extensions/URLSession+Extension.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Helpers/IRCEventLoopExecutor.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Managers/PQSDelegation/MessageReceiverManager.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Managers/PQSDelegation/PQSSessionDelegateWrapper.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Managers/PQSDelegation/SessionTransportManager.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Managers/PQSDelegation/WebSocketTransportManager.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Managers/SessionManager+Connection.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Managers/SessionManager.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Managers/Transport/IRCConnection.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Models/MessagePacket.swift"
+    "Apple/PostQuantumSolaceDemo/PostQuantumSolaceDemo/Store/PQSSessionCache.swift"
+
+    # Gnome demo (old core copies under Sources)
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Configuration/AppConfiguration.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Extensions/URLSession+Extension.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Helpers/IRCEventLoopExecutor.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Managers/PQSDelegation/MessageReceiverManager.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Managers/PQSDelegation/PQSSessionDelegateWrapper.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Managers/PQSDelegation/SessionTransportManager.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Managers/PQSDelegation/WebSocketTransportManager.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Managers/SessionManager+Connection.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Managers/SessionManager.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Managers/Transport/IRCConnection.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Models/MessagePacket.swift"
+    "Gnome/post-quantum-solace-gnome-demo-app/Sources/Store/PQSSessionCache.swift"
+
+    # Skip demo (old core copies under Sources/PostQuantumSolaceSkipDemo)
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Configuration/AppConfiguration.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Extensions/URLSession+Extension.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Helpers/IRCEventLoopExecutor.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Managers/PQSDelegation/MessageReceiverManager.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Managers/PQSDelegation/PQSSessionDelegateWrapper.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Managers/PQSDelegation/SessionTransportManager.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Managers/PQSDelegation/WebSocketTransportManager.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Managers/SessionManager+Connection.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Managers/SessionManager.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Managers/Transport/IRCConnection.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Models/MessagePacket.swift"
+    "Skip/post-quantum-solace-skip-demo/Sources/PostQuantumSolaceSkipDemo/Store/PQSSessionCache.swift"
+  )
+
+  for path in "${legacy_paths[@]}"; do
+    if [[ -f "$path" ]]; then
+      rm "$path"
+      changed_any=true
+      echo "removed legacy core file: $path"
+    fi
+  done
+}
+
 # Sanitize all Xcode project files
 while IFS= read -r -d '' pbx; do
   before="$(shasum "$pbx" | awk '{print $1}')"
@@ -54,6 +110,9 @@ while IFS= read -r -d '' senv; do
     echo "sanitized: $senv"
   fi
 done < <(find . -type f -name Skip.env -print0)
+
+# Remove legacy per-app core copies now that everything is shared via `sample-core`
+sanitize_legacy_core_files
 
 # Exit with success; pre-commit will add -u to stage changes
 if [[ "$changed_any" == true ]]; then

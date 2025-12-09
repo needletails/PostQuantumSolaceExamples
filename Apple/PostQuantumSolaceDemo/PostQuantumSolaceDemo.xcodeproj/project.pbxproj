@@ -7,15 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09296BB92E7C07EE0000D871 /* ConnectionManagerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */; };
 		09296C8A2E7C0EA10000D871 /* PQSIRCCore in Frameworks */ = {isa = PBXBuildFile; productRef = 09296C892E7C0EA10000D871 /* PQSIRCCore */; };
 		09296C8D2E7C0EC40000D871 /* PQSServerCore in Frameworks */ = {isa = PBXBuildFile; productRef = 09296C8C2E7C0EC40000D871 /* PQSServerCore */; };
-		09342F7E2E7414D3007243B3 /* NeedleTailAlgorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */; };
-		09380F992ED706B500386693 /* NeedleTailIRC in Frameworks */ = {isa = PBXBuildFile; productRef = 09380F982ED706B500386693 /* NeedleTailIRC */; };
-		093810AA2ED720D100386693 /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 093810A92ED720D100386693 /* PostQuantumSolace */; };
-		093810AF2ED722CC00386693 /* PostQuantumSolace in Frameworks */ = {isa = PBXBuildFile; productRef = 09342F5E2E740AE1007243B3 /* PostQuantumSolace */; };
-		093810B02ED722CC00386693 /* ConnectionManagerKit in Frameworks */ = {isa = PBXBuildFile; productRef = 09296B6E2E7C00340000D871 /* ConnectionManagerKit */; };
-		093810B12ED722CC00386693 /* NeedleTailIRC in Frameworks */ = {isa = PBXBuildFile; productRef = 09380F632ED6FF9200386693 /* NeedleTailIRC */; };
+		092BC8FF2EE70B0C00F1C2D6 /* SampleCore in Frameworks */ = {isa = PBXBuildFile; productRef = 092BC8FE2EE70B0C00F1C2D6 /* SampleCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -84,13 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				093810B12ED722CC00386693 /* NeedleTailIRC in Frameworks */,
-				093810B02ED722CC00386693 /* ConnectionManagerKit in Frameworks */,
-				093810AF2ED722CC00386693 /* PostQuantumSolace in Frameworks */,
-				09296BB92E7C07EE0000D871 /* ConnectionManagerKit in Frameworks */,
-				09380F992ED706B500386693 /* NeedleTailIRC in Frameworks */,
-				09342F7E2E7414D3007243B3 /* NeedleTailAlgorithms in Frameworks */,
-				093810AA2ED720D100386693 /* PostQuantumSolace in Frameworks */,
+				092BC8FF2EE70B0C00F1C2D6 /* SampleCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,12 +180,9 @@
 			name = PostQuantumSolaceDemo;
 			packageProductDependencies = (
 				09342F5E2E740AE1007243B3 /* PostQuantumSolace */,
-				09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */,
 				096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */,
-				09296B6E2E7C00340000D871 /* ConnectionManagerKit */,
 				09380F632ED6FF9200386693 /* NeedleTailIRC */,
-				09380F982ED706B500386693 /* NeedleTailIRC */,
-				093810A92ED720D100386693 /* PostQuantumSolace */,
+				092BC8FE2EE70B0C00F1C2D6 /* SampleCore */,
 			);
 			productName = PostQuantumSolaceDemo;
 			productReference = 09342F272E7409EC007243B3 /* PostQuantumSolaceDemo.app */;
@@ -234,12 +219,9 @@
 			mainGroup = 09342F1E2E7409EC007243B3;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */,
-				09296B6D2E7C00340000D871 /* XCRemoteSwiftPackageReference "connection-manager-kit" */,
 				09296C882E7C0EA10000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-irc-server" */,
 				09296C8B2E7C0EC40000D871 /* XCLocalSwiftPackageReference "../../Servers/pqs-server" */,
-				09380F972ED706B500386693 /* XCRemoteSwiftPackageReference "needletail-irc" */,
-				093810A82ED720D100386693 /* XCRemoteSwiftPackageReference "post-quantum-solace" */,
+				092BC8FD2EE70B0C00F1C2D6 /* XCLocalSwiftPackageReference "../../sample-core" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 09342F282E7409EC007243B3 /* Products */;
@@ -489,6 +471,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -531,6 +514,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -592,49 +576,13 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = "../../Servers/pqs-server";
 		};
+		092BC8FD2EE70B0C00F1C2D6 /* XCLocalSwiftPackageReference "../../sample-core" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../../sample-core";
+		};
 /* End XCLocalSwiftPackageReference section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		09296B6D2E7C00340000D871 /* XCRemoteSwiftPackageReference "connection-manager-kit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/needletails/connection-manager-kit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.2.0;
-			};
-		};
-		09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/needletails/needletail-algorithms";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.4;
-			};
-		};
-		09380F972ED706B500386693 /* XCRemoteSwiftPackageReference "needletail-irc" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/needletails/needletail-irc.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-		093810A82ED720D100386693 /* XCRemoteSwiftPackageReference "post-quantum-solace" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/needletails/post-quantum-solace.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		09296B6E2E7C00340000D871 /* ConnectionManagerKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 09296B6D2E7C00340000D871 /* XCRemoteSwiftPackageReference "connection-manager-kit" */;
-			productName = ConnectionManagerKit;
-		};
 		09296C892E7C0EA10000D871 /* PQSIRCCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PQSIRCCore;
@@ -643,28 +591,17 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = PQSServerCore;
 		};
+		092BC8FE2EE70B0C00F1C2D6 /* SampleCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SampleCore;
+		};
 		09342F5E2E740AE1007243B3 /* PostQuantumSolace */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PostQuantumSolace;
 		};
-		09342F7D2E7414D3007243B3 /* NeedleTailAlgorithms */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 09342F7C2E7414D3007243B3 /* XCRemoteSwiftPackageReference "needletail-algorithms" */;
-			productName = NeedleTailAlgorithms;
-		};
 		09380F632ED6FF9200386693 /* NeedleTailIRC */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = NeedleTailIRC;
-		};
-		09380F982ED706B500386693 /* NeedleTailIRC */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 09380F972ED706B500386693 /* XCRemoteSwiftPackageReference "needletail-irc" */;
-			productName = NeedleTailIRC;
-		};
-		093810A92ED720D100386693 /* PostQuantumSolace */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 093810A82ED720D100386693 /* XCRemoteSwiftPackageReference "post-quantum-solace" */;
-			productName = PostQuantumSolace;
 		};
 		096EFC0D2E79B865008C1E39 /* ConnectionManagerKit */ = {
 			isa = XCSwiftPackageProductDependency;
