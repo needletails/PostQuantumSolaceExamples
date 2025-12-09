@@ -57,6 +57,7 @@ struct MessageBubbleAdw: View {
 	private func load() async {
 		let props = try? await encrypted.props(symmetricKey: PQSSession.shared.getDatabaseSymmetricKey())
 		let currentUser = await PQSSession.shared.sessionContext?.sessionUser.secretName
+		await MainActor.run {
 			if let props = props, !props.message.text.isEmpty {
 				self.isMine = (props.senderSecretName == currentUser)
 				self.message = props.message.text
@@ -64,6 +65,7 @@ struct MessageBubbleAdw: View {
 				self.shouldShow = true
 			}
 			self.isLoading = false
+		}
 	}
 
 	private func formatTime(_ date: Date) -> String {

@@ -32,9 +32,7 @@ struct RegistrationViewAdw: View {
 
             HStack(spacing: 12) {
 				Button("Register") {
-					Task { 
-					await register(name: secretName, password: password)
-					}
+					Task { await register(name: secretName, password: password) }
 				}
 				.suggested()
                 .insensitive(secretName.isEmpty || password.isEmpty || isRegistering)
@@ -54,9 +52,8 @@ struct RegistrationViewAdw: View {
 				appPassword: password,
 				store: store
 			)
-			logger.log(level: .info, message: "Registration completed successfully")
-				isRegistering = false
-				isRegistered = true
+			isRegistering = false
+			isRegistered = true
 		} catch {
 			print("There was an error registering: \(error)")
 			isRegistering = false
