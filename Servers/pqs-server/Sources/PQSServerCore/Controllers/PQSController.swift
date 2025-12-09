@@ -93,15 +93,15 @@ struct PQSController {
         }
         
         router.get("/api/auth/one-time-keys/:secretName/:deviceId") { request, context in
-            return try await fetchOneTimeCurveKeyIdentites(request: request, context: context, store: store)
+            return try await fetchOneTimeKeys(request: request, context: context, store: store)
         }
         
         router.post("/api/auth/one-time-keys/a/identities/:secretName/:deviceId") { request, context in
-            return try await fetchOneTimeMLKEMKeyIdentites(request: request, context: context, store: store)
+            return try await fetchOneTimeCurveKeyIdentites(request: request, context: context, store: store)
         }
         
         router.post("/api/auth/one-time-keys/b/identities/:secretName/:deviceId") { request, context in
-            return try await fetchOneTimeKeys(request: request, context: context, store: store)
+            return try await fetchOneTimeMLKEMKeyIdentites(request: request, context: context, store: store)
         }
     }
     

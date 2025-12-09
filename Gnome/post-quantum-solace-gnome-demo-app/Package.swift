@@ -11,10 +11,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://git.aparoksha.dev/aparoksha/adwaita-swift", branch: "main"),
         .package(url: "https://git.aparoksha.dev/aparoksha/localized", branch: "main"),
-        .package(url: "https://github.com/needletails/needletail-algorithms.git", from: "2.0.4"),
-        .package(url: "https://github.com/needletails/needletail-irc.git", branch: "main"),
-        .package(url: "https://github.com/needletails/post-quantum-solace.git", from: "2.0.0"),
-        .package(url: "https://github.com/needletails/connection-manager-kit.git", from: "2.2.0")
+        .package(path: "../../sample-core")
     ],
     targets: [
         .executableTarget(
@@ -22,10 +19,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Adwaita", package: "adwaita-swift"),
                 .product(name: "Localized", package: "localized"),
-                .product(name: "NeedleTailAlgorithms", package: "needletail-algorithms"),
-                .product(name: "NeedleTailIRC", package: "needletail-irc"),
-                .product(name: "PostQuantumSolace", package: "post-quantum-solace"),
-                .product(name: "ConnectionManagerKit", package: "connection-manager-kit"),
+                .product(name: "SampleCore", package: "sample-core"),
             ],
             path: "Sources",
             resources: [

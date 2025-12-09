@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SampleCore
 
 @main
 struct PostQuantumSolaceDemoApp: App {

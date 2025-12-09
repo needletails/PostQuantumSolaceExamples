@@ -5,7 +5,7 @@
 //  Created by Cole M on 9/12/25.
 //
 import SwiftUI
-import PQSSession
+import SampleCore
 
 struct AddContactView: View {
     
@@ -17,13 +17,17 @@ struct AddContactView: View {
     }
     
     @State private var contactName = ""
+    @State private var isCreating: Bool = false
+    @State private var showError: Bool = false
+    @State private var errorMessage: String = ""
     @Binding var contacts: [Contact]
     @Environment(\.dismiss) private var dismiss
     @FocusState private var focusedField: Field?
+    private let logger = NeedleTailLogger("AddContactView")
     
     enum Field { case contact, secret }
     
-    var canAdd: Bool { !contactName.isEmpty }
+    var canAdd: Bool { !contactName.isEmpty && !isCreating }
     
     var body: some View {
         Group {
@@ -35,6 +39,11 @@ struct AddContactView: View {
 #endif
         }
         .onAppear { focusedField = .contact }
+        .alert("Error", isPresented: $showError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(errorMessage)
+        }
     }
     
     // MARK: - iOS
@@ -49,8 +58,12 @@ struct AddContactView: View {
                         Button("Cancel") { dismiss() }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Add") { addAndDismiss() }
-                            .disabled(!canAdd)
+                        if isCreating {
+                            ProgressView()
+                        } else {
+                            Button("Add") { addAndDismiss() }
+                                .disabled(!canAdd)
+                        }
                     }
                 }
 #else
@@ -59,8 +72,12 @@ struct AddContactView: View {
                         Button("Cancel") { dismiss() }
                     }
                     ToolbarItem(placement: .confirmationAction) {
-                        Button("Add") { addAndDismiss() }
-                            .disabled(!canAdd)
+                        if isCreating {
+                            ProgressView()
+                        } else {
+                            Button("Add") { addAndDismiss() }
+                                .disabled(!canAdd)
+                        }
                     }
                 }
 #endif
@@ -81,10 +98,14 @@ struct AddContactView: View {
                 Spacer()
                 Button("Cancel") { dismiss() }
                     .keyboardShortcut(.escape, modifiers: [])
-                Button("Add") { addAndDismiss() }
-                    .keyboardShortcut(.return, modifiers: [])
-                    .disabled(!canAdd)
-                    .buttonStyle(.borderedProminent)
+                if isCreating {
+                    ProgressView()
+                } else {
+                    Button("Add") { addAndDismiss() }
+                        .keyboardShortcut(.return, modifiers: [])
+                        .disabled(!canAdd)
+                        .buttonStyle(.borderedProminent)
+                }
             }
             .padding(.top, 8)
         }
@@ -112,8 +133,16 @@ struct AddContactView: View {
 #endif
             }
             Section {
-                Button("Add Contact") { addAndDismiss() }
-                    .disabled(!canAdd)
+                if isCreating {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                } else {
+                    Button("Add Contact") { addAndDismiss() }
+                        .disabled(!canAdd)
+                }
             }
         }
         .formStyle(.grouped)
@@ -122,8 +151,34 @@ struct AddContactView: View {
     
     private func addAndDismiss() {
         Task {
-            try? await session.createContact(secretName: contactName.lowercased())
-            dismiss()
+            await MainActor.run {
+                isCreating = true
+            }
+            
+            do {
+                let secretName = contactName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                guard !secretName.isEmpty else {
+                    await MainActor.run {
+                        isCreating = false
+                    }
+                    return
+                }
+                
+                try await session.createContact(secretName: secretName)
+                
+                await MainActor.run {
+                    isCreating = false
+                    contactName = ""
+                    dismiss()
+                }
+            } catch {
+                logger.log(level: .error, message: "Failed to create contact: \(error)")
+                await MainActor.run {
+                    isCreating = false
+                    errorMessage = "Failed to create contact: \(error.localizedDescription)"
+                    showError = true
+                }
+            }
         }
     }
 }

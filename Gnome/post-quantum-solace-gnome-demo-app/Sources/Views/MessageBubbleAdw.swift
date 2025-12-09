@@ -1,5 +1,5 @@
 import Adwaita
-import PQSSession
+import SampleCore
 import Foundation
 #if canImport(FoundationNetworking)
 import FoundationNetworking

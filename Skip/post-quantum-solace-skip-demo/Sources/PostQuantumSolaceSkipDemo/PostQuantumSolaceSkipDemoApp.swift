@@ -1,8 +1,10 @@
 import Foundation
 import SkipFuse
 import SwiftUI
+import SampleCore
 
 /// A logger for the PostQuantumSolaceSkipDemo module.
+let logger = NeedleTailLogger("PostQuantumSolaceSkipDemo")
 
 /// The shared top-level view for the app, loaded from the platform-specific App delegates below.
 ///

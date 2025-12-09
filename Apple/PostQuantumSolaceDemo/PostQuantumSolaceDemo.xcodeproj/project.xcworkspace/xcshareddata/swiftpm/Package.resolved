@@ -1,5 +1,5 @@
 {
-  "originHash" : "7504e4b8f65ef7e9fdcd7e020349a406ea53727704b1d4e5db48517ad550a2cb",
+  "originHash" : "14a386f5f9bf92d39283230e733689791b706d1c6508c3faba29f7e8e25557fc",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/needletails/double-ratchet-kit.git",
       "state" : {
-        "revision" : "26e7bac3ace2c3abbe0a77430bf248778ed9929e",
-        "version" : "2.0.0"
+        "revision" : "264504da466875487869be7906eaa4bb7fe8da9f",
+        "version" : "2.0.2"
       }
     },
     {
@@ -105,8 +105,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/needletails/post-quantum-solace.git",
       "state" : {
-        "revision" : "c0be7f2ad300d4fe7907941b857608475cf33ff2",
-        "version" : "2.0.0"
+        "revision" : "eb6663715bd41d2c91632dbc79e4dc3755dfd79c",
+        "version" : "2.0.2"
       }
     },
     {

@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import PQSSession
+import SampleCore
 
 struct RegistrationView: View {
     @State private var secretName: String = ""
-    @State private var password: String = ""
+    @State private var password: String = AppConfiguration.Session.defaultAppPassword
     @Binding private var isRegistered: Bool
     @State private var isRegistering: Bool = false
     
@@ -139,7 +139,7 @@ struct RegistrationView: View {
             isRegistering = false
             isRegistered = true
         } catch {
-            logger.log(level: .error, message: "There was an error registering: \(error)")
+            print("There was an error registering: \(error)")
         }
     }
 }

@@ -7,6 +7,7 @@ struct ToolbarView: View {
     var window: AdwaitaWindow
     var isRegistered: Binding<Bool>? = nil
     var showingAddContact: Binding<Bool>? = nil
+    var showingCreateChannel: Binding<Bool>? = nil
 
     var view: Body {
         HeaderBar {
@@ -19,6 +20,11 @@ struct ToolbarView: View {
             if let showingAddContact, isRegistered?.wrappedValue == true {
                 Button(icon: .default(icon: .listAdd)) {
                     showingAddContact.wrappedValue = true
+                }
+            }
+            if let showingCreateChannel, isRegistered?.wrappedValue == true {
+                Button("New Channel") {
+                    showingCreateChannel.wrappedValue = true
                 }
             }
             Menu(icon: .default(icon: .openMenu)) {
@@ -47,6 +53,9 @@ struct ToolbarView: View {
                 website: .init(string: "https://needletails.com")!,
                 issues: .init(string: "https://github.com/needletails/post-quantum-solace/issues")!
             )
+        }
+        .headerBarTitle {
+            Text("Post Quantum Solace")
         }
     }
 

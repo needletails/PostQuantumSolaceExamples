@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import PQSSession
+import SampleCore
 
 struct RegistrationView: View {
     @State var secretName: String = ""
-    @State var password: String = ""
+    @State var password: String = AppConfiguration.Session.defaultAppPassword
     @Binding var isRegistered: Bool
     @State var isRegistering: Bool = false
     
@@ -28,7 +28,7 @@ struct RegistrationView: View {
             VStack(spacing: 32) {
                 // Header Section
                 VStack(spacing: 8) {
-                    Image("logo", bundle: .module)
+                    Image.appLogo
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 80, height: 80)
@@ -78,7 +78,7 @@ struct RegistrationView: View {
                     }
                 }) {
                     HStack {
-                        Image(systemName: "person.badge.plus")
+                        Image.appRegisterPersonBadgePlus
                         Text("Register")
                             .fontWeight(.semibold)
                     }
@@ -109,7 +109,11 @@ struct RegistrationView: View {
                 VStack(spacing: 16) {
                     ProgressView()
                         .scaleEffect(1.2)
+#if os(iOS) || os(macOS) || os(tvOS)
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+#else
                         .progressViewStyle(CircularProgressViewStyle())
+#endif
                     
                     Text("Registering...")
                         .font(.headline)
@@ -118,6 +122,11 @@ struct RegistrationView: View {
                 .padding(24)
                 .background(
                     RoundedRectangle(cornerRadius: 16)
+#if os(iOS) || os(macOS) || os(tvOS)
+                        .fill(.ultraThinMaterial)
+#else
+                        .fill(Color.white.opacity(0.9))
+#endif
                         .shadow(radius: 10)
                 )
             }
